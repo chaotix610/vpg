@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VPG Animation Viewer</title>
+<style>
+  :root {
+    --bg: #15171c;
+    --panel: #1d2027;
+    --line: #2c303a;
+    --text: #e6e8ec;
+    --muted: #9aa1ad;
+    --accent: #f2b01e;
+    --error: #ff6b6b;
+    --control: #262a33;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    height: 100%;
+  }
+  .panel {
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h1 { font-size: 16px; margin: 0 0 4px; letter-spacing: .02em; }
+  label { display: flex; flex-direction: column; gap: 4px; color: var(--muted); font-size: 12px; }
+  select, input[type=search], button {
+    font: inherit;
+    color: var(--text);
+    background: var(--control);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 7px 8px;
+    min-width: 0;
+  }
+  select:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: end; }
+  .row > * { flex: 1; }
+  .check { flex-direction: row; align-items: center; gap: 6px; color: var(--text); font-size: 13px; flex: 0 0 auto; padding-bottom: 8px; }
+  .transport { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
+  .transport #time { grid-column: 1 / -1; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  #play { width: 72px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  #status { margin: 0; color: var(--muted); font-size: 12px; min-height: 2.8em; word-break: break-word; }
+  #status.error { color: var(--error); }
+  #clipName { margin: 0; font-size: 15px; font-weight: 600; min-height: 1.4em; }
+  .hint { margin: auto 0 0; color: var(--muted); font-size: 11px; }
+  kbd { background: var(--control); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; font: inherit; }
+  .viewport { position: relative; min-width: 0; min-height: 0; }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; outline: none; }
+  @media (max-width: 720px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: 55vh auto; height: auto; min-height: 100%; }
+    .viewport { order: -1; }
+    .panel { border-right: 0; border-top: 1px solid var(--line); overflow: visible; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/babylonjs@9.31.0/babylon.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/babylonjs-loaders@9.31.0/babylonjs.loaders.min.js"></script>
+</head>
+<body>
+<main class="app">
+  <aside class="panel">
+    <h1>VPG Animation Viewer</h1>
+    <label>Character
+      <select id="character" disabled></select>
+    </label>
+    <label>Folder
+      <select id="folder" disabled></select>
+    </label>
+    <label>Filter
+      <input id="filter" type="search" placeholder="e.g. suplex" autocomplete="off" disabled>
+    </label>
+    <label>Animation
+      <select id="animation" disabled></select>
+    </label>
+    <div class="row">
+      <button id="prev" type="button">&#9664; Prev</button>
+      <button id="next" type="button">Next &#9654;</button>
+    </div>
+    <p id="clipName"></p>
+    <div class="transport">
+      <button id="play" type="button">Pause</button>
+      <input id="scrub" type="range" min="0" max="1" step="any" value="0" aria-label="Timeline">
+      <span id="time">0.00 / 0.00 s</span>
+    </div>
+    <div class="row">
+      <label>Speed
+        <select id="speed">
+          <option value="0.1">0.1×</option>
+          <option value="0.25">0.25×</option>
+          <option value="0.5">0.5×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
+      </label>
+      <label class="check"><input id="loop" type="checkbox" checked> Loop</label>
+      <label class="check"><input id="follow" type="checkbox" checked> Follow</label>
+    </div>
+    <p id="status">Starting…</p>
+    <p class="hint"><kbd>&larr;</kbd>/<kbd>&rarr;</kbd> previous/next clip &middot; <kbd>Space</kbd> play/pause &middot; drag to orbit, scroll to zoom</p>
+  </aside>
+  <div class="viewport"><canvas id="view"></canvas></div>
+</main>
+
+<script>
+"use strict";
+
+// Where to find the assets. The page first crawls the directory listings of whatever
+// server it is on (python -m http.server, bunx serve, nginx autoindex, ...). If that
+// fails (GitHub Pages, file://), it lists the repo through the GitHub API instead.
+const GITHUB_REPO = "chaotix610/vpg-animations";
+const GITHUB_BRANCH = "main";
+const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/`;
+const CHAR_DIR = "assets/characters/";
+const ANIM_DIR = "assets/animations/";
+const DEFAULT_CLIP = "shared/standing/stances/standing-movement-style-0.glb";
+const ALL = "*";
+
+const $ = (id) => document.getElementById(id);
+const ui = {
+  character: $("character"), folder: $("folder"), filter: $("filter"), animation: $("animation"),
+  prev: $("prev"), next: $("next"), play: $("play"), scrub: $("scrub"), time: $("time"),
+  speed: $("speed"), loop: $("loop"), follow: $("follow"), status: $("status"), clipName: $("clipName"),
+};
+
+const state = {
+  assetBase: "",
+  characters: [],      // file names in CHAR_DIR
+  folders: new Map(),  // folder path -> [clip paths relative to ANIM_DIR]
+  allClips: [],
+  char: null,          // { path, container, nodes, rest, pelvis }
+  clip: null,          // { path, container, rest }
+  group: null,         // retargeted AnimationGroup playing on the character
+  fps: 60,
+  scrubbing: false,
+  clipFrame: null,     // { frame, playing } carried across a character switch
+};
+
+function setStatus(text, isError = false) {
+  ui.status.textContent = text;
+  ui.status.classList.toggle("error", isError);
+}
+
+const encodePath = (p) => p.split("/").map(encodeURIComponent).join("/");
+const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+const baseName = (p) => p.slice(p.lastIndexOf("/") + 1).replace(/\.glb$/i, "");
+const dirName = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/")) : "");
+
+// ---------------------------------------------------------------- file discovery
+
+async function listDir(dirUrl) {
+  const res = await fetch(dirUrl);
+  if (!res.ok || !(res.headers.get("content-type") || "").includes("text/html")) return null;
+  const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+  const base = new URL(dirUrl, location.href);
+  const dirs = new Set(), files = new Set();
+  for (const a of doc.querySelectorAll("a[href]")) {
+    const url = new URL(a.getAttribute("href"), base);
+    if (url.search || url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) continue;
+    const m = url.pathname.slice(base.pathname.length).match(/^([^/]+)(\/?)$/);
+    if (!m) continue;
+    const name = decodeURIComponent(m[1]);
+    if (m[2]) dirs.add(name);
+    else if (/\.glb$/i.test(name)) files.add(name);
+  }
+  return { dirs: [...dirs], files: [...files] };
+}
+
+async function crawl(root, sub = "") {
+  const listing = await listDir(root + encodePath(sub));
+  if (!listing) return sub ? [] : null;
+  const nested = await Promise.all(listing.dirs.map((d) => crawl(root, sub + d + "/")));
+  return [...listing.files.map((f) => sub + f), ...nested.flat()];
+}
+
+async function listFromServer() {
+  try {
+    const [characters, animations] = await Promise.all([
+      listDir(CHAR_DIR).then((l) => l && l.files),
+      crawl(ANIM_DIR),
+    ]);
+    if (characters?.length && animations?.length) return { characters, animations, assetBase: "" };
+  } catch { /* fall through to GitHub */ }
+  return null;
+}
+
+async function reachable(url) {
+  try { return (await fetch(url, { method: "HEAD" })).ok; } catch { return false; }
+}
+
+async function listFromGitHub() {
+  const cacheKey = `vpg-tree:${GITHUB_REPO}@${GITHUB_BRANCH}`;
+  let paths = null;
+  try { paths = JSON.parse(sessionStorage.getItem(cacheKey)); } catch { /* no storage */ }
+  if (!Array.isArray(paths)) {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1`);
+    if (!res.ok) throw new Error(`GitHub API returned ${res.status} while listing ${GITHUB_REPO}`);
+    const tree = await res.json();
+    paths = tree.tree.filter((e) => e.type === "blob" && /\.glb$/i.test(e.path)).map((e) => e.path);
+    try { sessionStorage.setItem(cacheKey, JSON.stringify(paths)); } catch { /* quota or no storage */ }
+  }
+  const under = (dir) => paths.filter((p) => p.startsWith(dir)).map((p) => p.slice(dir.length));
+  const characters = under(CHAR_DIR).filter((p) => !p.includes("/"));
+  const animations = under(ANIM_DIR);
+  // Same files next to the page (e.g. GitHub Pages)? Load them from here, else from raw.githubusercontent.
+  const local = characters.length && await reachable(CHAR_DIR + encodePath(characters[0]));
+  return { characters, animations, assetBase: local ? "" : RAW_BASE };
+}
+
+// ---------------------------------------------------------------- scene
+
+const canvas = $("view");
+const engine = new BABYLON.Engine(canvas, true, { stencil: true });
+engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
+const scene = new BABYLON.Scene(engine);
+const BG = BABYLON.Color3.FromHexString("#15171c");
+scene.clearColor = BG.toColor4(1);
+scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+scene.fogColor = BG;
+scene.fogStart = 8;
+scene.fogEnd = 20;
+
+const CAMERA_HOME = new BABYLON.Vector3(0, 0.9, 0);
+const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, 1.25, 4.4, CAMERA_HOME.clone(), scene);
+camera.attachControl(canvas, true);
+camera.minZ = 0.05;
+camera.lowerRadiusLimit = 0.8;
+camera.upperRadiusLimit = 25;
+camera.wheelDeltaPercentage = 0.01;
+camera.pinchDeltaPercentage = 0.01;
+camera.upperBetaLimit = Math.PI / 2 + 0.3;
+
+const hemi = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+hemi.intensity = 0.6;
+hemi.groundColor = new BABYLON.Color3(0.25, 0.25, 0.3);
+// Key light from in front, above and to one side, so the shadow falls behind the character where the camera sees it.
+const sun = new BABYLON.DirectionalLight("sun", new BABYLON.Vector3(0.5, -1.4, -0.7), scene);
+sun.position = sun.direction.scale(-10);
+sun.intensity = 1.8;
+sun.shadowMinZ = 1;
+sun.shadowMaxZ = 30;
+const shadows = new BABYLON.ShadowGenerator(2048, sun);
+shadows.usePercentageCloserFiltering = true;
+shadows.bias = 0.0005;
+shadows.normalBias = 0.01;
+shadows.darkness = 0.35;
+
+// 1 m grid as a tiled texture (mipmapped, so it stays clean at grazing angles and fades into the fog).
+const GROUND_SIZE = 40;
+const gridTex = new BABYLON.DynamicTexture("gridTex", { width: 256, height: 256 }, scene, true);
+const ctx = gridTex.getContext();
+ctx.fillStyle = "#2a2e37";
+ctx.fillRect(0, 0, 256, 256);
+ctx.strokeStyle = "#454b59";
+ctx.lineWidth = 4;
+ctx.strokeRect(0, 0, 256, 256);
+gridTex.update();
+gridTex.wrapU = gridTex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+gridTex.uScale = gridTex.vScale = GROUND_SIZE;
+gridTex.anisotropicFilteringLevel = 16;
+
+const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: GROUND_SIZE, height: GROUND_SIZE }, scene);
+const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+groundMat.diffuseTexture = gridTex;
+groundMat.diffuseColor = new BABYLON.Color3(0.45, 0.45, 0.45);
+groundMat.specularColor = BABYLON.Color3.Black();
+ground.material = groundMat;
+ground.receiveShadows = true;
+ground.isPickable = false;
+
+async function loadContainer(path) {
+  return BABYLON.LoadAssetContainerAsync(state.assetBase + encodePath(path), scene, {
+    pluginExtension: ".glb",
+    // Don't auto-play: we read each file's rest pose straight after loading.
+    pluginOptions: { gltf: { animationStartMode: BABYLON.GLTFLoaderAnimationStartMode.NONE } },
+  });
+}
+
+function nodesByName(container) {
+  const map = new Map();
+  for (const node of [...container.transformNodes, ...container.meshes]) {
+    if (!map.has(node.name)) map.set(node.name, node);
+  }
+  return map;
+}
+
+function restPositions(nodes) {
+  const rest = new Map();
+  for (const [name, node] of nodes) rest.set(name, node.position.clone());
+  return rest;
+}
+
+// Every character uses the VPG Rig 2.0 skeleton (same bone names, same rest rotations),
+// but bone lengths differ between characters. Clips key translation on every bone, so
+// copying them verbatim would force the clip's proportions onto the character. Instead,
+// translation keys become: character rest + (clip key - clip rest). Rotations carry over
+// as-is; scale keys are always 1.0 and are skipped.
+function retarget(clip, char) {
+  const source = clip.container.animationGroups[0];
+  if (!source) throw new Error("This file has no animation.");
+  const group = new BABYLON.AnimationGroup(source.name, scene);
+  for (const { animation, target } of source.targetedAnimations) {
+    const node = char.nodes.get(target.name);
+    if (!node || animation.targetProperty === "scaling") continue;
+    const anim = animation.clone();
+    if (animation.targetProperty === "position") {
+      const clipRest = clip.rest.get(target.name);
+      const charRest = char.rest.get(target.name);
+      if (clipRest && charRest) {
+        const offset = charRest.subtract(clipRest);
+        anim.setKeys(animation.getKeys().map((k) => ({ ...k, value: k.value.add(offset) })));
+      }
+    }
+    group.addTargetedAnimation(anim, node);
+  }
+  state.fps = source.targetedAnimations[0]?.animation.framePerSecond || 60;
+  return group;
+}
+
+function applyClip() {
+  if (state.group) state.group.dispose();
+  state.group = null;
+  if (!state.char || !state.clip) return updateTransport();
+
+  const group = retarget(state.clip, state.char);
+  state.group = group;
+  ui.scrub.min = group.from;
+  ui.scrub.max = group.to;
+  group.onAnimationGroupEndObservable.add(updatePlayButton);
+  group.start(ui.loop.checked, Number(ui.speed.value), group.from, group.to);
+  updateTransport();
+}
+
+// ---------------------------------------------------------------- loading
+
+let charToken = 0;
+async function loadCharacter(file) {
+  const token = ++charToken;
+  setStatus(`Loading character ${file}…`);
+  try {
+    const container = await loadContainer(CHAR_DIR + file);
+    if (token !== charToken) return container.dispose();
+    const nodes = nodesByName(container);
+    const char = { path: file, container, nodes, rest: restPositions(nodes), pelvis: nodes.get("pelvis") };
+    if (state.group) { state.group.dispose(); state.group = null; }
+    if (state.char) state.char.container.dispose();
+    container.addAllToScene();
+    for (const mesh of container.meshes) {
+      if (mesh.getTotalVertices() > 0) shadows.addShadowCaster(mesh, false);
+    }
+    state.char = char;
+    const carried = state.clipFrame;
+    state.clipFrame = null;
+    applyClip();
+    if (carried) restoreTime(carried);
+    setStatus(describe());
+  } catch (err) {
+    if (token === charToken) setStatus(`Couldn't load ${file}: ${err.message || err}`, true);
+  }
+  saveHash();
+}
+
+let clipToken = 0;
+async function loadClip(path) {
+  const token = ++clipToken;
+  setStatus(`Loading ${path}…`);
+  try {
+    const container = await loadContainer(ANIM_DIR + path);
+    if (token !== clipToken) return container.dispose();
+    const clip = { path, container, rest: restPositions(nodesByName(container)) };
+    if (state.clip) state.clip.container.dispose();
+    state.clip = clip;
+    applyClip();
+    setStatus(describe());
+  } catch (err) {
+    if (token === clipToken) setStatus(`Couldn't load ${path}: ${err.message || err}`, true);
+  }
+  saveHash();
+}
+
+// Switching character keeps the clip, the current time and the play/pause state.
+function restoreTime({ frame, playing }) {
+  const g = state.group;
+  if (!g) return;
+  g.goToFrame(Math.min(Math.max(frame, g.from), g.to));
+  if (!playing) g.pause();
+  updateTransport();
+}
+
+function describe() {
+  if (!state.clip) return state.char ? `${state.char.path} loaded` : "";
+  const g = state.group;
+  const secs = g ? ((g.to - g.from) / state.fps).toFixed(2) : "?";
+  return `${ANIM_DIR}${state.clip.path} · ${secs}s` + (state.assetBase ? " · from GitHub" : "");
+}
+
+// ---------------------------------------------------------------- dropdowns
+
+function fillCharacters() {
+  ui.character.replaceChildren(...state.characters.map((f) => new Option(baseName(f), f)));
+}
+
+function fillFolders() {
+  const total = state.allClips.length;
+  const options = [new Option(`All folders (${total})`, ALL)];
+  const groups = new Map();
+  for (const [folder, clips] of state.folders) {
+    const [top, ...rest] = folder.split("/");
+    if (!groups.has(top)) {
+      const og = document.createElement("optgroup");
+      og.label = top || "(top level)";
+      groups.set(top, og);
+      options.push(og);
+    }
+    groups.get(top).append(new Option(`${rest.length ? rest.join(" / ") : top} (${clips.length})`, folder));
+  }
+  ui.folder.replaceChildren(...options);
+}
+
+function fillAnimations() {
+  const folder = ui.folder.value;
+  const words = ui.filter.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const clips = (folder === ALL ? state.allClips : state.folders.get(folder) || [])
+    .filter((p) => words.every((w) => p.toLowerCase().includes(w)));
+  ui.animation.replaceChildren(...clips.map((p) => new Option(folder === ALL ? p.replace(/\.glb$/i, "") : baseName(p), p)));
+  // Keep the playing clip selected if it's in the list; otherwise leave nothing selected
+  // so typing in the filter doesn't load a clip per keystroke.
+  ui.animation.selectedIndex = state.clip ? clips.indexOf(state.clip.path) : -1;
+  ui.prev.disabled = ui.next.disabled = clips.length === 0;
+}
+
+function selectFolder(folder) {
+  ui.folder.value = folder;
+  ui.filter.value = "";
+  fillAnimations();
+  if (ui.animation.selectedIndex < 0 && ui.animation.options.length) {
+    ui.animation.selectedIndex = 0;
+    loadClip(ui.animation.value);
+  }
+}
+
+function step(delta) {
+  const n = ui.animation.options.length;
+  if (!n) return;
+  const cur = ui.animation.selectedIndex;
+  const idx = cur < 0 ? (delta > 0 ? 0 : n - 1) : Math.min(Math.max(cur + delta, 0), n - 1);
+  if (idx === cur) return;
+  ui.animation.selectedIndex = idx;
+  loadClip(ui.animation.value);
+}
+
+// ---------------------------------------------------------------- transport
+
+function ensureStarted() {
+  const g = state.group;
+  if (g && !g.isStarted) {
+    g.start(ui.loop.checked, Number(ui.speed.value), g.from, g.to);
+    g.pause();
+  }
+}
+
+function updatePlayButton() {
+  ui.play.textContent = state.group?.isPlaying ? "Pause" : "Play";
+}
+
+function updateTransport() {
+  const g = state.group;
+  updatePlayButton();
+  ui.play.disabled = ui.scrub.disabled = !g;
+  if (!g) { ui.time.textContent = "0.00 / 0.00 s"; ui.clipName.textContent = ""; return; }
+  ui.clipName.textContent = g.name;
+  const frame = g.getCurrentFrame();
+  if (!state.scrubbing) ui.scrub.value = frame;
+  ui.time.textContent = `${((frame - g.from) / state.fps).toFixed(2)} / ${((g.to - g.from) / state.fps).toFixed(2)} s · frame ${Math.round((frame - g.from) * 30 / state.fps)}`;
+}
+
+ui.play.addEventListener("click", () => {
+  const g = state.group;
+  if (!g) return;
+  if (g.isPlaying) g.pause();
+  else if (!g.isStarted || (!ui.loop.checked && g.getCurrentFrame() >= g.to)) {
+    g.stop();
+    g.start(ui.loop.checked, Number(ui.speed.value), g.from, g.to);
+  } else g.play(ui.loop.checked);
+  updatePlayButton();
+});
+
+ui.scrub.addEventListener("input", () => {
+  const g = state.group;
+  if (!g) return;
+  state.scrubbing = true;
+  ensureStarted();
+  g.pause();
+  g.goToFrame(Number(ui.scrub.value));
+  updateTransport();
+});
+ui.scrub.addEventListener("change", () => { state.scrubbing = false; });
+
+ui.speed.addEventListener("change", () => { if (state.group) state.group.speedRatio = Number(ui.speed.value); });
+ui.loop.addEventListener("change", () => { if (state.group) state.group.loopAnimation = ui.loop.checked; });
+ui.follow.addEventListener("change", () => { if (!ui.follow.checked) camera.target.copyFrom(CAMERA_HOME); });
+
+ui.character.addEventListener("change", () => {
+  state.clipFrame = state.group ? { frame: state.group.getCurrentFrame(), playing: state.group.isPlaying } : null;
+  loadCharacter(ui.character.value);
+});
+ui.folder.addEventListener("change", () => selectFolder(ui.folder.value));
+ui.filter.addEventListener("input", fillAnimations);
+ui.animation.addEventListener("change", () => { if (ui.animation.value) loadClip(ui.animation.value); });
+ui.prev.addEventListener("click", () => step(-1));
+ui.next.addEventListener("click", () => step(1));
+
+document.addEventListener("keydown", (e) => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const tag = document.activeElement?.tagName;
+  if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+  if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+  else if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+  else if (e.key === " " && tag !== "BUTTON") { ui.play.click(); e.preventDefault(); }
+});
+
+// ---------------------------------------------------------------- URL hash (bookmarkable)
+
+function readHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  return { character: p.get("character"), animation: p.get("animation") };
+}
+
+function saveHash() {
+  const p = new URLSearchParams();
+  if (state.char) p.set("character", state.char.path);
+  if (state.clip) p.set("animation", state.clip.path);
+  history.replaceState(null, "", "#" + p.toString().replace(/%2F/g, "/"));
+}
+
+// ---------------------------------------------------------------- render loop
+
+const followTarget = new BABYLON.Vector3();
+scene.onBeforeRenderObservable.add(() => {
+  if (ui.follow.checked && state.char?.pelvis && state.group) {
+    const p = state.char.pelvis.getAbsolutePosition();
+    followTarget.set(p.x, CAMERA_HOME.y, p.z);
+    BABYLON.Vector3.LerpToRef(camera.target, followTarget, 0.08, camera.target);
+  }
+  if (state.group) updateTransport();
+});
+engine.runRenderLoop(() => scene.render());
+window.addEventListener("resize", () => engine.resize());
+new ResizeObserver(() => engine.resize()).observe(canvas);
+
+// ---------------------------------------------------------------- start up
+
+(async function init() {
+  setStatus("Indexing animations…");
+  let listing;
+  try {
+    listing = (await listFromServer()) || (await listFromGitHub());
+  } catch (err) {
+    setStatus(`Couldn't list the animation files: ${err.message || err}. Serve the repo folder over HTTP (e.g. "python3 -m http.server") and open this page from it.`, true);
+    return;
+  }
+  state.assetBase = listing.assetBase;
+  state.characters = listing.characters.sort(naturalSort);
+  state.allClips = listing.animations.sort(naturalSort);
+  const folders = new Map();
+  for (const p of state.allClips) {
+    const d = dirName(p);
+    if (!folders.has(d)) folders.set(d, []);
+    folders.get(d).push(p);
+  }
+  state.folders = new Map([...folders].sort(([a], [b]) => naturalSort(a, b)));
+
+  fillCharacters();
+  fillFolders();
+  for (const el of [ui.character, ui.folder, ui.filter, ui.animation]) el.disabled = false;
+
+  const want = readHash();
+  const character = state.characters.includes(want.character) ? want.character
+    : state.characters.find((f) => /mannequin/i.test(f)) || state.characters[0];
+  ui.character.value = character;
+  const startClip = [want.animation, DEFAULT_CLIP].find((p) => state.allClips.includes(p)) || state.allClips[0];
+
+  await loadCharacter(character);
+  ui.folder.value = dirName(startClip);
+  fillAnimations();
+  ui.animation.value = startClip;
+  await loadClip(startClip);
+})();
+</script>
+</body>
+</html>
