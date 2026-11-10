@@ -2,6 +2,13 @@
 
 This project contains the animations for [Virtual Pro Grappler](https://github.com/chaotix610/VirtualProGrappler).  Each animation is a single GLB file, and is mapped to the VPG 2.0 Skeleton Rig.
 
+## Viewer
+
+The web-based viewer to test out the animations is available at [](https://chaotix610.github.io/vpg-animations).
+
+<img width="1053" height="784" alt="image" src="https://github.com/user-attachments/assets/9b8e44a8-07c2-43a2-aeb3-0faea5daa71d" style="width:100%"/>
+
+
 ## VPG Rig 2.0
 
 ### Overview
