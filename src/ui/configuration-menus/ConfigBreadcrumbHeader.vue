@@ -81,30 +81,31 @@ defineEmits<{
 .cfg-crumb {
   margin: 0;
   font-family: var(--vpg-font-display);
-  font-weight: 700;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  line-height: 1.05;
+  line-height: 1.02;
+  -webkit-font-smoothing: none;
   text-shadow: 2px 2px 0 rgba(5, 8, 18, 0.92), 0 0 14px rgba(0, 0, 0, 0.65);
 }
 
 .cfg-crumb--lime {
-  font-size: clamp(1.1rem, 2.3vw, 1.85rem);
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
   color: var(--vpg-cfg-crumb-primary);
 }
 
 .cfg-crumb--root {
-  font-size: clamp(1.45rem, 3vw, 2.35rem);
+  font-size: clamp(1.65rem, 3.3vw, 2.65rem);
 }
 
 .cfg-crumb--blue {
   margin-left: 0.85rem;
-  font-size: clamp(1.35rem, 2.9vw, 2.25rem);
+  font-size: clamp(1.55rem, 3.2vw, 2.55rem);
   color: var(--vpg-cfg-crumb-secondary);
 }
 
 .cfg-crumb--white {
-  font-size: clamp(1rem, 1.9vw, 1.45rem);
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
   color: var(--vpg-cfg-crumb-tertiary);
 }
 </style>

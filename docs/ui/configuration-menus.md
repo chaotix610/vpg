@@ -28,7 +28,7 @@ Fonts are declared in [src/ui/global.css](../../src/ui/global.css) from bundled 
 
 | Role | CSS Token | Font Face | Styling Rules |
 |---|---|---|---|
-| Screen breadcrumbs & modal titles | `--vpg-font-display` | `VPG XFiles` (`xfiles.ttf`) | Uppercase, `letter-spacing: 0.1em`, crisp hard drop shadow (`2px 2px 0 rgba(5, 8, 18, 0.92)`). |
+| Screen breadcrumbs & modal titles | `--vpg-font-display` | `VPG Retropix` (`retropix/retropix.otf.woff2`, `.otf`, `.ttf`) | Uppercase, native pixel weight (`400`), `-webkit-font-smoothing: none`, `letter-spacing: 0.1em`, crisp hard drop shadow (`2px 2px 0 rgba(5, 8, 18, 0.92)`). |
 | Menu bars, buttons, values, picker cells, readouts & controller bar | `--vpg-font-pixel` | `VPG Retropix` (`retropix/retropix.otf.woff2`, `.otf`, `.ttf`) | Uppercase, native pixel weight (`400`), `-webkit-font-smoothing: none`, `letter-spacing: 0.06em–0.08em`. Both `400` and `700` map to the regular face to prevent synthetic faux-bold smudging. |
 
 ### Colour Palette & CSS Tokens

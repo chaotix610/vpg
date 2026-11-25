@@ -34,7 +34,7 @@ Fonts are declared in [src/ui/global.css](../../src/ui/global.css):
 
 | Role | CSS Token | Font Face | Styling Rules |
 |---|---|---|---|
-| Fallback page heading | `--vpg-font-display` | `VPG XFiles` (`xfiles.ttf`) | Uppercase, `clamp(1.6rem, 5vw, 2.6rem)`, `letter-spacing: 0.12em` (used when a page has `headingImage: null`). |
+| Fallback page heading | `--vpg-font-display` | `VPG Retropix` (`retropix/retropix.otf.woff2`, `.otf`, `.ttf`) | Uppercase, `clamp(1.6rem, 5vw, 2.6rem)`, `letter-spacing: 0.12em` (used when a page has `headingImage: null`). |
 | Menu items | `--vpg-font-menu-item` | `VPG Impact` (`Impact.ttf`) | Bold (`700`), `clamp(26px, 2.65vw, 34px)`, deliberately compressed `line-height: 18px` and `letter-spacing: -2px` to create the iconic tightly stacked N64 menu silhouette. |
 | Back button, hints, status & info modal | `--vpg-font-body` | `VPG Impact` (`Impact.ttf`) | Clean readable sizing (`0.75rem–1.2rem`) with dark text shadow over the arena image. |
 
@@ -114,7 +114,7 @@ Full-viewport arena backdrop container with centered vertical flex layout.
 - **Slots**: default slot for menu stack or full-screen child routes.
 
 ### `MainMenuHeading`
-Displays custom logo artwork when `src` is provided, falling back to an uppercase `VPG XFiles` `<h1>`.
+Displays custom logo artwork when `src` is provided, falling back to an uppercase `VPG Retropix` `<h1>`.
 
 - **Props**:
   - `title: string` — accessible `alt` text for artwork or visible `<h1>` text

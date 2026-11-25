@@ -4,12 +4,6 @@
  */
 
 @font-face {
-  font-family: "VPG XFiles";
-  src: url("/assets/ui/fonts/xfiles.ttf") format("truetype");
-  font-display: swap;
-}
-
-@font-face {
   font-family: "VPG Impact";
   src: url("/assets/ui/fonts/Impact.ttf") format("truetype");
   font-weight: 700;
@@ -53,7 +47,7 @@
   color-scheme: dark;
 
   /* ------------------------------------------------ Shared typography */
-  --vpg-font-display: "VPG XFiles", Impact, "Arial Black", sans-serif;
+  --vpg-font-display: "VPG Retropix", "Courier New", ui-monospace, monospace;
   --vpg-font-body: "VPG Impact", Impact, "Arial Black", sans-serif;
   --vpg-font-menu-item: "VPG Impact", Impact, "Arial Black", sans-serif;
   --vpg-font-pixel: "VPG Retropix", "Courier New", ui-monospace, monospace;

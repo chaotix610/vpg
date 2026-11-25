@@ -1,6 +1,6 @@
 <!--
   Main Menu page header: renders custom logo artwork when configured, or falls
-  back to an uppercase VPG XFiles display heading.
+  back to an uppercase VPG Retropix display heading.
 -->
 <template>
   <img
