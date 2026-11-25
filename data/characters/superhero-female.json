@@ -1,0 +1,5 @@
+{
+  "$schema": "../../schemas/characters.schema.json",
+  "name": "Superhero Female",
+  "glb": "assets/characters/models/quarternius/base-characters/superhero-female.glb"
+}

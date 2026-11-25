@@ -1,0 +1,572 @@
+<!--
+  Arena Viewer, ported from VirtualProGrappler-V2. A menu of every arena
+  (bundled and saved in this browser) with its preview art; choosing one opens
+  it in an orbiting Babylon scene. MainMenu loads it on demand, so Babylon
+  stays out of the menu's chunk.
+-->
+<template>
+  <div class="viewer">
+    <canvas ref="canvas" class="viewer__canvas" :data-active="sceneOpen" />
+
+    <!-- Selection UI, hidden once an arena is on screen. -->
+    <div v-if="!sceneOpen" class="select" :style="backgroundStyle">
+      <h1 class="select__title">Arena Viewer</h1>
+
+      <div class="select__layout">
+        <ul class="rows">
+          <li
+            v-for="(arena, index) in arenas"
+            :key="arena.id"
+            class="row"
+            :class="{ 'row--active': index === cursor }"
+            @click="choose(index)"
+            @mouseenter="cursor = index"
+          >
+            <span class="row__name">{{ arena.displayName }}</span>
+            <span v-if="arena.custom" class="row__tag">Custom</span>
+          </li>
+          <li
+            class="row row--back"
+            :class="{ 'row--active': cursor === backIndex }"
+            @click="choose(backIndex)"
+            @mouseenter="cursor = backIndex"
+          >
+            Back
+          </li>
+        </ul>
+
+        <div class="preview">
+          <img v-if="previewUrl" class="preview__image" :src="previewUrl" :alt="`${selected?.displayName} preview`" />
+          <div v-else class="preview__empty">No preview</div>
+        </div>
+      </div>
+
+      <p class="menu__hint">
+        <img class="menu__hint-icon" :src="menuIcons.dPad" alt="D-Pad" /> move
+        &middot; <img class="menu__hint-icon" :src="menuIcons.a" alt="A button" /> view
+        &middot; <img class="menu__hint-icon" :src="menuIcons.b" alt="B button" /> back
+      </p>
+      <p v-if="status" class="select__status">{{ status }}</p>
+    </div>
+
+    <!-- Overlay while a scene is open. -->
+    <div v-else class="hud">
+      <span class="hud__name">{{ selected?.displayName }}</span>
+      <span class="hud__keys">
+        <kbd>{{ keyFor("controlStickUp") }}</kbd><kbd>{{ keyFor("controlStickLeft") }}</kbd><kbd>{{ keyFor("controlStickDown") }}</kbd><kbd>{{ keyFor("controlStickRight") }}</kbd>
+        rotate &middot; <kbd>{{ keyFor("cUp") }}</kbd>/<kbd>{{ keyFor("cDown") }}</kbd> zoom &middot; mouse drag/scroll &middot;
+        <kbd>{{ keyFor("b") }}</kbd> close
+      </span>
+      <button type="button" class="hud__close" @click="onCloseClick">Close</button>
+      <span v-if="warnings.length" class="hud__warning">{{ warnings.join(" / ") }}</span>
+    </div>
+
+    <!-- Live camera readout; polled because mouse drags move it too. -->
+    <dl v-if="sceneOpen && view" class="position">
+      <dt>Pos</dt>
+      <dd>{{ formatVec(view.position) }}</dd>
+      <dt>Target</dt>
+      <dd>{{ formatVec(view.target) }}</dd>
+      <dt>Orbit</dt>
+      <dd>
+        &alpha; {{ degrees(view.alpha) }}&deg; &middot; &beta; {{ degrees(view.beta) }}&deg; &middot; r
+        {{ view.radius.toFixed(2) }}
+      </dd>
+    </dl>
+
+    <div v-if="loading" class="loading">Loading&hellip;</div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, markRaw } from "vue";
+import { type ArenaSummary, arenaById, availableArenas } from "@/content/arenas";
+import { requireAsset, resolveAsset } from "@/content/assets";
+import { type PadControl, describeBinding, keysForControl } from "@/input/controls";
+import {
+  type VirtualInput,
+  isInteractivePointerTarget,
+  isMenuDown,
+  isMenuUp,
+  pollGamepadBindings,
+  virtualInputFor,
+  virtualInputForBinding,
+} from "@/input/VirtualController";
+import { playMenuCue } from "@/audio/menuAudio";
+import { ArenaScene, CAMERA_INPUTS, type CameraState } from "@/render/arena/ArenaScene";
+import { acquireImageUrls, textureValues } from "@/save/imageUrls";
+
+/** The menu hint's controller icons, as the main menu shows them. */
+const MENU_ICONS = {
+  dPad: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Pad.svg"),
+  a: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-A.svg"),
+  b: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-B.svg"),
+  z: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Z.svg"),
+};
+
+export default defineComponent({
+  name: "ArenaViewer",
+
+  emits: ["back"],
+
+  data() {
+    return {
+      cursor: 0,
+      sceneOpen: false,
+      loading: false,
+      status: "",
+      warnings: [] as string[],
+      // markRaw keeps Vue from proxying the Babylon scene graph, which would
+      // be slow and subtly break engine internals.
+      scene: null as ArenaScene | null,
+      /** Guards against an older load finishing after a newer one. */
+      loadToken: 0,
+      /** The camera as of the last readout poll. */
+      view: null as CameraState | null,
+      viewTimer: 0,
+      stopGamepadPolling: null as (() => void) | null,
+      menuIcons: MENU_ICONS,
+    };
+  },
+
+  computed: {
+    arenas(): ArenaSummary[] {
+      return availableArenas();
+    },
+
+    /** The Back row sits after the arenas. */
+    backIndex(): number {
+      return this.arenas.length;
+    },
+
+    selected(): ArenaSummary | null {
+      return this.arenas[this.cursor] ?? null;
+    },
+
+    previewUrl(): string | null {
+      return this.selected?.previewUrl ?? null;
+    },
+
+    /**
+     * The crowd art behind the selection screen. The scrim rides on top of
+     * the photo in the same property, so the menu text keeps its contrast.
+     */
+    backgroundStyle(): Record<string, string> {
+      const url = resolveAsset("assets/ui/textures/artwork/crowd-1.png");
+      if (!url) return {};
+      return {
+        backgroundImage: `linear-gradient(rgba(11, 14, 20, 0.66), rgba(11, 14, 20, 0.66)), url(${url})`,
+      };
+    },
+  },
+
+  mounted() {
+    window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("pointerdown", this.onPointerDown);
+    // A held stick keeps orbiting, as a held key does.
+    this.stopGamepadPolling = pollGamepadBindings(this.onGamepadBinding, {
+      repeat: (binding) => CAMERA_INPUTS.includes(virtualInputForBinding(binding) ?? ""),
+      repeatDelay: 120,
+      repeatInterval: 30,
+    });
+    // A few updates a second is plenty to read, and keeps Vue out of the render loop.
+    this.viewTimer = window.setInterval(this.pollView, 100);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("pointerdown", this.onPointerDown);
+    this.stopGamepadPolling?.();
+    window.clearInterval(this.viewTimer);
+    this.loadToken += 1;
+    this.scene?.dispose();
+    this.scene = null;
+  },
+
+  methods: {
+    keyFor(control: PadControl): string {
+      const [binding] = keysForControl(control);
+      return binding ? describeBinding(binding) : "unbound";
+    },
+
+    onKeyDown(event: KeyboardEvent) {
+      const input = virtualInputFor(event);
+      if (!input) return;
+      event.preventDefault();
+      this.onMappedInput(input);
+    },
+
+    onPointerDown(event: PointerEvent) {
+      if (isInteractivePointerTarget(event)) return;
+      const input = virtualInputFor(event);
+      if (!input) return;
+      event.preventDefault();
+      this.onMappedInput(input);
+    },
+
+    onGamepadBinding(binding: string, repeat = false) {
+      const input = virtualInputForBinding(binding);
+      // Only the camera repeats; a repeat never reaches the menu.
+      if (input && (!repeat || (this.sceneOpen && CAMERA_INPUTS.includes(input)))) this.onMappedInput(input);
+    },
+
+    onMappedInput(input: VirtualInput) {
+      if (this.sceneOpen) {
+        if (input === "b") {
+          playMenuCue("back");
+          return this.closeScene();
+        }
+        if (CAMERA_INPUTS.includes(input)) this.scene?.moveCamera(input);
+        return;
+      }
+
+      if (isMenuUp(input)) return this.move(-1);
+      if (isMenuDown(input)) return this.move(1);
+      if (input === "a") return this.choose(this.cursor);
+      if (input === "b") {
+        playMenuCue("back");
+        return this.$emit("back");
+      }
+      // Left and right stay inert, as they are in the menus.
+    },
+
+    pollView() {
+      this.view = this.sceneOpen ? (this.scene?.cameraState() ?? null) : null;
+    },
+
+    formatVec(v: { x: number; y: number; z: number }): string {
+      return [v.x, v.y, v.z].map((n) => n.toFixed(2)).join(", ");
+    },
+
+    degrees(radians: number): string {
+      return ((radians * 180) / Math.PI).toFixed(1);
+    },
+
+    move(delta: number) {
+      // The arenas plus the Back row.
+      const count = this.arenas.length + 1;
+      this.cursor = (this.cursor + delta + count) % count;
+      this.status = "";
+      playMenuCue("move");
+      this.$nextTick(() => this.$el?.querySelector?.(".row--active")?.scrollIntoView({ block: "nearest" }));
+    },
+
+    choose(index: number) {
+      this.cursor = index;
+      if (index === this.backIndex) {
+        playMenuCue("back");
+        return this.$emit("back");
+      }
+      const arena = this.arenas[index];
+      if (!arena) return;
+      playMenuCue("select");
+      void this.open(arena.id);
+    },
+
+    async open(arenaId: string) {
+      const token = ++this.loadToken;
+      this.loading = true;
+      this.status = "";
+      this.warnings = [];
+      // Shown before loading so the canvas has its full size when the engine
+      // measures it; a hidden canvas would come back with a zero viewport.
+      this.sceneOpen = true;
+      await this.$nextTick();
+
+      try {
+        const arena = arenaById(arenaId);
+        if (!arena) throw new Error(`No arena data for "${arenaId}"`);
+        if (!this.scene) this.scene = markRaw(new ArenaScene(this.$refs.canvas as HTMLCanvasElement));
+        const lease = await acquireImageUrls(textureValues(arena));
+        if (token !== this.loadToken || !this.scene) {
+          lease.release();
+          return;
+        }
+        const report = await this.scene.load(arena, lease);
+        if (token !== this.loadToken) return;
+        this.warnings = report.warnings;
+      } catch (error) {
+        if (token !== this.loadToken) return;
+        this.closeScene();
+        this.status = `Could not load ${arenaId}: ${error instanceof Error ? error.message : String(error)}`;
+        playMenuCue("deny");
+      } finally {
+        if (token === this.loadToken) this.loading = false;
+      }
+    },
+
+    onCloseClick() {
+      playMenuCue("back");
+      this.closeScene();
+    },
+
+    closeScene() {
+      // Invalidates any load still in flight.
+      this.loadToken += 1;
+      this.scene?.dispose();
+      this.scene = null;
+      this.sceneOpen = false;
+      this.loading = false;
+      this.warnings = [];
+    },
+  },
+});
+</script>
+
+<style scoped>
+.viewer {
+  position: absolute;
+  inset: 0;
+  background: #0b0e14;
+  color: #f2f5f8;
+  font-family: var(--vpg-font-body);
+}
+
+.viewer__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+  touch-action: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.viewer__canvas[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.select {
+  position: absolute;
+  inset: 0;
+  background-color: #0b0e14;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.select__title {
+  margin: 0;
+  font-family: var(--vpg-font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.select__layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 26vw) minmax(280px, 30rem);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+}
+
+@media (max-width: 720px) {
+  .select__layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  color: var(--vpg-item-color-idle);
+  font-family: var(--vpg-font-menu-item);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: var(--vpg-item-stroke);
+  cursor: pointer;
+  transition: -webkit-text-fill-color var(--vpg-state-transition), -webkit-text-stroke-width var(--vpg-state-transition);
+}
+
+.row--back {
+  margin-top: 0.5rem;
+}
+
+.row--active {
+  -webkit-text-fill-color: var(--vpg-item-color-active);
+  -webkit-text-stroke-width: 1.5px;
+  animation: glowPulse 1s ease-in-out infinite;
+}
+
+.row__name {
+  flex: 1;
+}
+
+.row__tag {
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+  font-family: var(--vpg-font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  -webkit-text-fill-color: #f2f5f8;
+  -webkit-text-stroke-width: 0;
+  opacity: 0.7;
+  animation: none;
+}
+
+.preview__image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.preview__empty {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  opacity: 0.5;
+  font-size: 0.85rem;
+}
+
+.menu__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.menu__hint-icon {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0 0.12rem;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.select__status {
+  margin: 0;
+  color: var(--vpg-item-color-active);
+  font-size: 0.85rem;
+  max-width: 40rem;
+  text-align: center;
+}
+
+.hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(transparent, rgba(10, 14, 20, 0.8));
+  font-size: 0.82rem;
+  pointer-events: none;
+}
+
+.hud__name {
+  font-family: var(--vpg-font-menu-item);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -1px;
+}
+
+.hud__keys {
+  flex: 1;
+  opacity: 0.75;
+}
+
+.hud__close {
+  pointer-events: auto;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.3rem;
+  background: #141a24;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hud__close:hover,
+.hud__close:focus-visible {
+  border-color: var(--vpg-item-color-active);
+}
+
+.hud__warning {
+  flex-basis: 100%;
+  color: #ffcc80;
+}
+
+.position {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.15rem 0.6rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  background: rgba(10, 14, 20, 0.7);
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.position dt {
+  opacity: 0.6;
+}
+
+.position dd {
+  margin: 0;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 8, 12, 0.6);
+  font-family: var(--vpg-font-menu-item);
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.3rem;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom-width: 2px;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  font-family: var(--vpg-font-body);
+  font-size: 0.75rem;
+  text-align: center;
+}
+</style>

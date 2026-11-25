@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumo Nebula Background — Annotated Version</title>
+<style>
+	/* ============================================================
+	   HOW THIS EFFECT WORKS — QUICK OVERVIEW
+	   ------------------------------------------------------------
+	   The "cloud in the universe" look is built from 4 stacked layers:
+
+	     1. .nebula   (z-index 0) — five big colored circles ("blobs"),
+	                             heavily blurred into a soft cloud.
+	     2. .vignette (z-index 1) — a subtle darkening at the screen edges.
+	     3. .demo-card (z-index 2) — your actual content goes here.
+	     4. .dot-grid (z-index 3) — the faint grid of dots ON TOP of
+	                             everything, exactly like the original.
+
+	   Each blob is just a plain <div> with a border-radius of 50%
+	   (making it a circle), a semi-transparent background color, and a
+	   slow CSS animation that moves (translates) and resizes (scales)
+	   it. The heavy blur on the parent (.nebula) melts the circles
+	   together into smooth clouds of color.
+
+	   To customize, search this file for:
+	     [COLORS]  — change blob colors
+	     [SPEED]   — make the drift faster or slower
+	     [SIZE]    — make blobs bigger/smaller
+	     [POSITION]— move the whole cluster or individual blobs
+	     [DOTS]    — the foreground dot grid
+	   ============================================================ */
+
+
+	/* ---------- Reset & page setup ---------- */
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	/* Lock the page to the full viewport with no scrollbars,
+	   so the background acts like a fixed stage. */
+	html, body {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	/* The base color of the "universe".
+	   [COLORS] Change #060507 to alter the void.
+	   Slightly non-black (#060507 instead of #000) keeps it from
+	   looking completely flat; go darker (e.g. #030204) for more drama. */
+	body {
+		background: #060507;
+		color: #fff;
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+	}
+
+	/* ============================================================
+	   LAYER 1 — THE NEBULA (the colored cloud)
+	   ============================================================
+	   This is the container for all blobs. Two important tricks:
+
+	   1. filter: blur(...) is applied HERE, on the parent, so all
+	      blobs blur together as one group instead of individually.
+	      [SIZE/EFFECT] Raise the px value (e.g. 140px) for an even
+	      softer, mistier cloud; lower it (e.g. 70px) so blobs become
+	      more distinct, like in the "separated" screenshot.
+
+	   2. overflow: hidden clips the blobs at the viewport edge so
+	      they never cause scrollbars when they drift around. */
+	.nebula {
+		position: fixed;
+		inset: 0;            /* shorthand for top/right/bottom/left: 0 */
+		z-index: 0;
+		overflow: hidden;
+		filter: blur(110px) saturate(1.15); /* saturate boosts color richness */
+	}
+
+	/* Shared blob styling. Every blob is a circle that animates. */
+	.blob {
+		position: absolute;
+		border-radius: 50%;       /* makes the div a circle */
+		will-change: transform;   /* hint to the browser: animate smoothly via GPU */
+	}
+
+	/* ------------------------------------------------------------
+	   THE FIVE BLOBS
+	   ------------------------------------------------------------
+	   Layout cheat sheet — each blob has 4 knobs:
+
+	     width/height : overall size. Values in vw (viewport width %)
+	                    so the cloud scales with the window.
+	                    [SIZE] Bigger = broader wash of color.
+	     top/left     : position, as % of the viewport.
+	                    [POSITION] Move these to rearrange the cluster.
+	                    Together they place the blob's TOP-LEFT corner.
+	     background   : rgba(red, green, blue, opacity).
+	                    [COLORS] Change the RGB triplet for color, the
+	                    4th value (0–1) for intensity. Higher opacity =
+	                    brighter, more saturated glow. The blur mixes
+	                    overlapping colors automatically (blue + orange
+	                    overlap looks purple, etc.).
+	     animation    : which @keyframes to run, duration, and easing.
+	                    [SPEED] The number before "s" is the time for
+	                    ONE half of the trip (alternate plays it forwards
+	                    then backwards). Smaller = faster. Duration
+	                    differences between blobs keep the motion
+	                    organic instead of synchronized.
+	   ------------------------------------------------------------ */
+
+	/* Cobalt blue — the core of the cloud, center-left. */
+	.blob--blue {
+		width: 34vw;
+		height: 30vw;
+		top: 42%;
+		left: 28%;
+		background: rgba(47, 83, 199, 0.85);      /* [COLORS] */
+		animation: drift-blue 9s ease-in-out infinite alternate;  /* [SPEED] */
+	}
+
+	/* Purple — bridges the blue and pink zones. */
+	.blob--purple {
+		width: 26vw;
+		height: 24vw;
+		top: 34%;
+		left: 42%;
+		background: rgba(124, 77, 255, 0.75);     /* [COLORS] */
+		animation: drift-purple 11s ease-in-out infinite alternate;
+	}
+
+	/* Hot magenta/pink — right side of the cluster. */
+	.blob--pink {
+		width: 22vw;
+		height: 20vw;
+		top: 46%;
+		left: 56%;
+		background: rgba(219, 60, 160, 0.8);      /* [COLORS] */
+		animation: drift-pink 10s ease-in-out infinite alternate;
+	}
+
+	/* Warm orange — upper right. Overlapping the pink/purple is what
+	   gives the galaxy feel; its complement against blue makes the
+	   muddy purple seen in the middle of the original. */
+	.blob--orange {
+		width: 24vw;
+		height: 20vw;
+		top: 26%;
+		left: 58%;
+		background: rgba(230, 126, 60, 0.72);     /* [COLORS] */
+		animation: drift-orange 12s ease-in-out infinite alternate;
+	}
+
+	/* Deep violet echo — adds depth below the main cluster. */
+	.blob--violet {
+		width: 28vw;
+		height: 26vw;
+		top: 54%;
+		left: 36%;
+		background: rgba(72, 52, 168, 0.65);      /* [COLORS] */
+		animation: drift-violet 10.5s ease-in-out infinite alternate;
+	}
+
+	/* ------------------------------------------------------------
+	   THE DRIFT ANIMATIONS
+	   ------------------------------------------------------------
+	   Each keyframes pair defines the START (from) and END (to) of one
+	   journey; "alternate" then reverses it, so the blob glides out
+	   and back forever.
+
+	   transform: translate(x, y) — how far the blob wanders.
+	     [SPEED/DRAMA] Increase these distances (they're in vw/vh) for
+	     more dramatic separation & merging — try 15–20vw for the
+	     "blobs apart" look of the original's third screenshot. Use
+	     smaller values (2–5vw) for a calmer breathing motion.
+
+	   transform: scale(n) — grows (>1) or shrinks (<1) the blob over
+	     the trip. Scale changes make clouds swell and recede, which
+	     reads as depth.
+
+	   TIP: stagger with animation-delay too, e.g.
+	     animation-delay: -3s;
+	   Negative delays start blobs mid-journey so the cluster isn't
+	   perfectly synchronized on page load. */
+	@keyframes drift-blue {
+		from { transform: translate(0, 0) scale(1); }
+		to   { transform: translate(-12vw, 8vh) scale(1.18); }
+	}
+
+	@keyframes drift-purple {
+		from { transform: translate(0, 0) scale(1.05); }
+		to   { transform: translate(10vw, -10vh) scale(0.88); }
+	}
+
+	@keyframes drift-pink {
+		from { transform: translate(0, 0) scale(0.95); }
+		to   { transform: translate(12vw, 6vh) scale(1.2); }
+	}
+
+	@keyframes drift-orange {
+		from { transform: translate(0, 0) scale(1.1); }
+		to   { transform: translate(-14vw, 10vh) scale(0.85); }
+	}
+
+	@keyframes drift-violet {
+		from { transform: translate(0, 0) scale(1); }
+		to   { transform: translate(14vw, -12vh) scale(1.12); }
+	}
+
+	/* ============================================================
+	   LAYER 2 — THE DOT GRID (foreground texture)
+	   ============================================================
+	   The original has a faint regular grid of tiny dark specks
+	   floating ABOVE the content. Recreated here purely with CSS:
+
+	   1. background-image uses a tiny radial-gradient repeated by
+	      background-size: one dark dot per 26×26px cell.
+	      [DOTS] Change background-size for grid spacing (smaller =
+	      denser dots). Change the "1.2px"/"1.8px" radii for dot size,
+	      and the rgba alpha (0.45) for dot strength.
+
+	   2. mix-blend-mode: multiply makes the dots darken whatever is
+	      beneath them rather than painting opaque grey squares.
+
+	   3. mask-image fades the grid out in an ellipse shape, so dots
+	      only show up over the glowing cloud and vanish at the black
+	      edges — matching the original. Adjust the ellipse percentages
+	      (60% 48% at 50% 50%) to enlarge/shrink/shrink/reposition the
+	      dotted zone.
+
+	   4. z-index: 3 puts it on top of content; pointer-events: none
+	      lets clicks pass through to buttons/links underneath. */
+	.dot-grid {
+		position: fixed;
+		inset: 0;
+		z-index: 3;
+		pointer-events: none;
+		background-image:
+			radial-gradient(circle, rgba(0, 0, 0, 0.45) 1.2px, transparent 1.8px);
+		background-size: 26px 26px;          /* [DOTS] grid spacing */
+		background-position: 13px 13px;      /* offsets dots so they sit between gridlines */
+		mix-blend-mode: multiply;
+		-webkit-mask-image: radial-gradient(ellipse 60% 48% at 50% 50%, black 40%, transparent 80%);
+		mask-image: radial-gradient(ellipse 60% 48% at 50% 50%, black 40%, transparent 80%);
+		opacity: 0.6;                        /* [DOTS] overall grid subtlety (0–1) */
+	}
+
+	/* ============================================================
+	   LAYER 3 — VIGNETTE
+	   ============================================================
+	   A radial gradient that is transparent over the center and fades
+	   to dark at the edges, deepening the "void" and framing the
+	   cloud. Adjust the ellipse size and the final rgba alpha (0.6)
+	   to strengthen or soften the falloff. */
+	.vignette {
+		position: fixed;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+	}
+
+	/* ============================================================
+	   LAYER 4 — DEMO CONTENT
+	   ============================================================
+   /* This is just sample content so you can see how UI sits on top
+	   of the effect. The glassy look comes from backdrop-filter, which
+	   blurs whatever is BEHIND the card. Delete this block and put
+	   your own markup in <main> instead. */
+	.demo-card {
+		position: relative;
+		z-index: 2;
+		text-align: center;
+		padding: 3rem 4rem;
+		border-radius: 1rem;
+		background: rgba(15, 14, 18, 0.55);   /* translucent dark panel */
+		backdrop-filter: blur(14px);          /* frosted-glass effect */
+		border: 1px solid rgba(255, 255, 255, 0.07);
+	}
+
+	.demo-card h1 {
+		font-size: 1.8rem;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
+	}
+
+	.demo-card p {
+		color: #a7a4b5;
+		font-size: 0.95rem;
+	}
+
+	/* Accessibility: respect the OS setting for reduced motion by
+	   freezing the drift animation. Good practice for any animated
+	   background. */
+	@media (prefers-reduced-motion: reduce) {
+		.blob { animation: none; }
+	}
+</style>
+</head>
+<body>
+
+	<!-- LAYER 1: the nebula. Blobs are listed violet-first so the
+	     violet renders underneath the others (later siblings paint
+	     on top in the absence of explicit z-indexes). -->
+	<div class="nebula" aria-hidden="true">
+		<div class="blob blob--violet"></div>
+		<div class="blob blob--blue"></div>
+		<div class="blob blob--purple"></div>
+		<div class="blob blob--pink"></div>
+		<div class="blob blob--orange"></div>
+	</div>
+
+	<!-- LAYER 2: edge darkening. aria-hidden since purely decorative. -->
+	<div class="vignette" aria-hidden="true"></div>
+
+	<!-- LAYER 3: your content. Replace the demo card with anything —
+	     the background layers are all position:fixed and pointer-friendly,
+	     so normal UI works on top unchanged. -->
+	<main class="demo-card">
+		<h1>Your content goes here</h1>
+		<p>The dot grid floats above everything, just like in the screenshots.</p>
+	</main>
+
+	<!-- LAYER 4: the foreground dot grid. Lives AFTER <main> in the DOM
+	     AND has the highest z-index, so it visually sits on top of the
+	     content — exactly like the original page. pointer-events: none
+	     (in the CSS) keeps it from blocking clicks. -->
+	<div class="dot-grid" aria-hidden="true"></div>
+
+</body>
+</html>

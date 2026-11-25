@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "standard_barricade",
+  "displayName": "Standard Barricade",
+  "kind": "barricade",
+  "glb": "assets/environments/arenas/shared/models/barricade/barricade.glb"
+}

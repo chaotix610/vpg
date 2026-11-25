@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "royal_rumble_floor",
+  "displayName": "Royal Rumble Floor",
+  "kind": "floor",
+  "glb": "assets/environments/arenas/shared/models/floor/royal_rumble_floor.glb"
+}

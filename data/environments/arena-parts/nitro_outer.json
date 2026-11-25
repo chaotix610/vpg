@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "nitro_outer",
+  "displayName": "Monday Nitro Arena Bowl",
+  "kind": "outer",
+  "glb": "assets/environments/arenas/shared/models/outer/nitro_outer.glb"
+}

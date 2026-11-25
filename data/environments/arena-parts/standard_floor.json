@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "standard_floor",
+  "displayName": "Standard Floor",
+  "kind": "floor",
+  "glb": "assets/environments/arenas/shared/models/floor/arena_floor.glb"
+}

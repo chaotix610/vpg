@@ -1,0 +1,26 @@
+{
+  "$schema": "../../../schemas/arenas.schema.json",
+  "id": "smackdown",
+  "displayName": "SMACKDOWN",
+  "previewImage": "assets/environments/arenas/shared/textures/previews/preview-smackdown.png",
+  "stage": "raw_is_war",
+  "floor": "standard_floor",
+  "barricade": "standard_barricade",
+  "outer": "standard_outer",
+  "arenaTextures": {
+    "mat_floor_ringside": "assets/environments/arenas/shared/textures/floor_ringside/floor_mat_1_double.png",
+    "mat_ringside_barricade": "assets/environments/arenas/shared/textures/floor_ringside/floor_mat_1_double.png"
+  },
+  "ringTextures": {
+    "mat_canvas": "assets/environments/ring/textures/canvas/canvas.png",
+    "mat_apron": "assets/environments/ring/textures/apron/apron_raw.png",
+    "mat_rope_top": "assets/environments/ring/textures/rope/rope.png",
+    "mat_rope_middle": "assets/environments/ring/textures/rope/rope.png",
+    "mat_rope_bottom": "assets/environments/ring/textures/rope/rope.png",
+    "ropeTopColor": "rgba(0, 0, 0, 0.4)",
+    "ropeMiddleColor": "rgba(0, 0, 0, 0.4)",
+    "ropeBottomColor": "rgba(0, 0, 0, 0.4)",
+    "turnbucklePadColor": "rgba(0, 0, 0, 1)",
+    "turnbuckleBoltCoverColor": "rgba(0, 0, 0, 0)"
+  }
+}

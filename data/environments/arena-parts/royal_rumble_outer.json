@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "royal_rumble_outer",
+  "displayName": "Royal Rumble Arena Bowl",
+  "kind": "outer",
+  "glb": "assets/environments/arenas/shared/models/outer/royal_rumble_outer.glb"
+}

@@ -1,0 +1,3729 @@
+{
+  "id": "ken-shamrock",
+  "rosterIndex": 96,
+  "costumeIndices": [
+    96,
+    97,
+    98,
+    99
+  ],
+  "profile": {
+    "fullName": "KEN SHAMROCK",
+    "shortName": "SHAMROCK",
+    "ringName": null,
+    "height": "6'1\"",
+    "weight": "235 lb",
+    "heightRaw": 13,
+    "weightRaw": 135,
+    "themeSong": 4,
+    "entranceVideo": 30,
+    "profileIndex": 78,
+    "rating": {
+      "rank": 43,
+      "of": 64,
+      "overall": 0.952,
+      "situations": {
+        "ground": 0.766,
+        "aerial": 0.933,
+        "running": 0.995,
+        "counter": 1.12,
+        "strike": 1.004,
+        "grapple": 0.938
+      },
+      "deals": 13.053,
+      "takes": 13.715
+    },
+    "attributes": {
+      "speed": 2,
+      "specificWeapon": 0,
+      "attack": {
+        "head": 2,
+        "body": 3,
+        "arms": 2,
+        "legs": 4,
+        "flying": 2
+      },
+      "defence": {
+        "head": 1,
+        "body": 3,
+        "arms": 3,
+        "legs": 3,
+        "flying": 2
+      }
+    },
+    "style": {
+      "index": 0,
+      "name": "Wrestling"
+    },
+    "partner": null,
+    "rivals": [],
+    "allParams": [
+      {
+        "index": 0,
+        "name": "speed",
+        "label": "Speed",
+        "value": 2,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 1,
+        "name": "field_1",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 2,
+        "name": "field_2",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 3,
+        "name": "field_3",
+        "label": null,
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 4,
+        "name": "field_4",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 5,
+        "name": "field_5",
+        "label": null,
+        "value": 2,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 6,
+        "name": "field_6",
+        "label": null,
+        "value": 3,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 7,
+        "name": "field_7",
+        "label": null,
+        "value": 2,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 8,
+        "name": "field_8",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 31
+      },
+      {
+        "index": 9,
+        "name": "specific_weapon",
+        "label": "Specific weapon",
+        "value": 0,
+        "min": 0,
+        "max": 63
+      },
+      {
+        "index": 10,
+        "name": "ability_1",
+        "label": "Head attack",
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 11,
+        "name": "ability_2",
+        "label": "Body attack",
+        "value": 3,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 12,
+        "name": "ability_3",
+        "label": "Arms attack",
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 13,
+        "name": "ability_4",
+        "label": "Legs attack",
+        "value": 4,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 14,
+        "name": "ability_5",
+        "label": "Flying attack",
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 15,
+        "name": "ability_6",
+        "label": "Head defence",
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 16,
+        "name": "ability_7",
+        "label": "Body defence",
+        "value": 3,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 17,
+        "name": "ability_8",
+        "label": "Arms defence",
+        "value": 3,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 18,
+        "name": "ability_9",
+        "label": "Legs defence",
+        "value": 3,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 19,
+        "name": "ability_10",
+        "label": "Flying defence",
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 20,
+        "name": "field_20",
+        "label": null,
+        "value": 2,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 21,
+        "name": "field_21",
+        "label": null,
+        "value": 7,
+        "min": 0,
+        "max": 31
+      },
+      {
+        "index": 22,
+        "name": "field_22",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 23,
+        "name": "field_23",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 24,
+        "name": "field_24",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 25,
+        "name": "field_25",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 26,
+        "name": "field_26",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 27,
+        "name": "field_27",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 511
+      },
+      {
+        "index": 28,
+        "name": "field_28",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 29,
+        "name": "field_29",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 30,
+        "name": "field_30",
+        "label": null,
+        "value": 158,
+        "min": 0,
+        "max": 511
+      },
+      {
+        "index": 31,
+        "name": "field_31",
+        "label": null,
+        "value": 2,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 32,
+        "name": "field_32",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 33,
+        "name": "field_33",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 34,
+        "name": "field_34",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 35,
+        "name": "field_35",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 15
+      },
+      {
+        "index": 36,
+        "name": "field_36",
+        "label": null,
+        "value": 1,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 37,
+        "name": "rival_1",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 4095
+      },
+      {
+        "index": 38,
+        "name": "rival_2",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 4095
+      },
+      {
+        "index": 39,
+        "name": "rival_3",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 4095
+      },
+      {
+        "index": 40,
+        "name": "partner",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 4095
+      },
+      {
+        "index": 41,
+        "name": "rival_1_kind",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 42,
+        "name": "rival_2_kind",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 43,
+        "name": "rival_3_kind",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 44,
+        "name": "partner_kind",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 7
+      },
+      {
+        "index": 45,
+        "name": "flags",
+        "label": null,
+        "value": 46147593,
+        "min": 0,
+        "max": 4294967295
+      },
+      {
+        "index": 46,
+        "name": "field_46",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 1
+      },
+      {
+        "index": 47,
+        "name": "field_47",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 1
+      },
+      {
+        "index": 48,
+        "name": "field_48",
+        "label": null,
+        "value": 0,
+        "min": 0,
+        "max": 15
+      }
+    ]
+  },
+  "moveset": {
+    "style": "Wrestling",
+    "fileId": 552,
+    "slots": [
+      {
+        "slot": 1,
+        "category": "Front grapple weak (A)",
+        "move": "Knee Lift",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13223,
+        "opponentAnimation": {
+          "file": 13224,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 2,
+        "category": "Front grapple weak (A)",
+        "move": "Snapmare",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13219,
+        "opponentAnimation": {
+          "file": 13220,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 3,
+        "category": "Front grapple weak (A)",
+        "move": "Fireman carry",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13221,
+        "opponentAnimation": {
+          "file": 13222,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 4,
+        "category": "Front grapple weak (A)",
+        "move": "Scoop Slam",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13215,
+        "opponentAnimation": {
+          "file": 13216,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 5,
+        "category": "Weak grapple (B)",
+        "move": "Knee Strikes 02",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13345,
+        "opponentAnimation": {
+          "file": 13346,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 10,
+        "category": "Weak grapple (B)",
+        "move": "Arm Wrench with Hook Kick",
+        "named": true,
+        "damage": 15,
+        "animationFile": 13515,
+        "opponentAnimation": {
+          "file": 13516,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 15,
+        "category": "Weak grapple (B)",
+        "move": "Snap Suplex",
+        "named": true,
+        "damage": 15,
+        "animationFile": 13245,
+        "opponentAnimation": {
+          "file": 13246,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 20,
+        "category": "Weak grapple (B)",
+        "move": "Russian Leg Sweep",
+        "named": true,
+        "damage": 15,
+        "animationFile": 13371,
+        "opponentAnimation": {
+          "file": 13372,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 25,
+        "category": "Front grapple strong",
+        "move": "DDT 01",
+        "named": true,
+        "damage": 22,
+        "animationFile": 13877,
+        "opponentAnimation": {
+          "file": 13878,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 30,
+        "category": "Front grapple strong",
+        "move": "Northern Lights Suplex 01",
+        "named": true,
+        "damage": 22,
+        "animationFile": 13635,
+        "opponentAnimation": {
+          "file": 13636,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 35,
+        "category": "Front grapple strong",
+        "move": "Rope Drop Clothesline",
+        "named": true,
+        "damage": 15,
+        "animationFile": 13475,
+        "opponentAnimation": {
+          "file": 13476,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 40,
+        "category": "Front grapple strong",
+        "move": "Small Package",
+        "named": true,
+        "damage": 23,
+        "animationFile": 13659,
+        "opponentAnimation": {
+          "file": 13660,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 45,
+        "category": "Front grapple strong",
+        "move": "Guillotine Choke",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13913,
+        "opponentAnimation": {
+          "file": 13914,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 50,
+        "category": "Front grapple strong",
+        "move": "Belly to Back Suplex",
+        "named": true,
+        "damage": 22,
+        "animationFile": 13899,
+        "opponentAnimation": {
+          "file": 13900,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 55,
+        "category": "Front grapple strong",
+        "move": "Hurracanrana Pin",
+        "named": true,
+        "damage": 20,
+        "animationFile": 13685,
+        "opponentAnimation": {
+          "file": 13686,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 60,
+        "category": "Front grapple strong",
+        "move": "Rolling Leg Lock",
+        "named": true,
+        "damage": 10,
+        "animationFile": 13925,
+        "opponentAnimation": {
+          "file": 13926,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 70,
+        "category": "Front grapple special",
+        "move": "Fisherman Suplex",
+        "named": true,
+        "damage": 22,
+        "animationFile": 13647,
+        "opponentAnimation": {
+          "file": 13648,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 71,
+        "category": "Combo strike, spinning back hand",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 72,
+        "category": "Front grapple special",
+        "move": "Fisherman Suplex",
+        "named": true,
+        "damage": 22,
+        "animationFile": 13647,
+        "opponentAnimation": {
+          "file": 13648,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      },
+      {
+        "slot": 73,
+        "category": "Back grapple weak",
+        "move": "Back Drop",
+        "named": true,
+        "damage": 20,
+        "animationFile": 14374,
+        "opponentAnimation": {
+          "file": 14375,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 74,
+        "category": "Back grapple weak",
+        "move": "Back Drop",
+        "named": true,
+        "damage": 20,
+        "animationFile": 14374,
+        "opponentAnimation": {
+          "file": 14375,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 75,
+        "category": "Back grapple weak",
+        "move": "Pendulum Back Breaker",
+        "named": true,
+        "damage": 20,
+        "animationFile": 14428,
+        "opponentAnimation": {
+          "file": 14429,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 76,
+        "category": "Back grapple weak",
+        "move": "Pendulum Back Breaker",
+        "named": true,
+        "damage": 20,
+        "animationFile": 14428,
+        "opponentAnimation": {
+          "file": 14429,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 77,
+        "category": "Back grapple strong",
+        "move": "Jumping HH Pin",
+        "named": true,
+        "damage": 23,
+        "animationFile": 14546,
+        "opponentAnimation": {
+          "file": 14547,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 78,
+        "category": "Back grapple strong",
+        "move": "Jumping HH Pin",
+        "named": true,
+        "damage": 23,
+        "animationFile": 14546,
+        "opponentAnimation": {
+          "file": 14547,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 79,
+        "category": "Back grapple strong",
+        "move": "German Suplex Pin",
+        "named": true,
+        "damage": 25,
+        "animationFile": 14506,
+        "opponentAnimation": {
+          "file": 14507,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 80,
+        "category": "Back grapple strong",
+        "move": "German Suplex Pin",
+        "named": true,
+        "damage": 25,
+        "animationFile": 14506,
+        "opponentAnimation": {
+          "file": 14507,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 81,
+        "category": "Back grapple special",
+        "move": "Jumping Armbar",
+        "named": true,
+        "damage": 15,
+        "animationFile": 14648,
+        "opponentAnimation": {
+          "file": 14649,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 82,
+        "category": "Combo strike, overhand slap",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 83,
+        "category": "Back grapple special",
+        "move": "Jumping Armbar",
+        "named": true,
+        "damage": 15,
+        "animationFile": 14648,
+        "opponentAnimation": {
+          "file": 14649,
+          "turn": 0,
+          "distance": 16,
+          "status": "hypothesis"
+        }
+      },
+      {
+        "slot": 84,
+        "category": "Back grapple counter weak",
+        "move": "Counter Elbow Strike",
+        "named": true,
+        "damage": 8,
+        "animationFile": 14763,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 85,
+        "category": "Back grapple counter weak",
+        "move": "Counter Armbar",
+        "named": true,
+        "damage": 15,
+        "animationFile": 14751,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 86,
+        "category": "Irish whip front grapple weak",
+        "move": "Monkey Toss",
+        "named": true,
+        "damage": 0,
+        "animationFile": 14886,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 88,
+        "category": "Irish whip front grapple weak",
+        "move": "Scissor Sweep",
+        "named": true,
+        "damage": 0,
+        "animationFile": 14883,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 90,
+        "category": "Irish whip front grapple weak",
+        "move": "Hurracanrana",
+        "named": true,
+        "damage": 0,
+        "animationFile": 14945,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 92,
+        "category": "Irish whip front grapple weak",
+        "move": "Powerslam 01",
+        "named": true,
+        "damage": 0,
+        "animationFile": 14893,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 94,
+        "category": "Irish whip front grapple special",
+        "move": "Front Special Grapple",
+        "named": true,
+        "damage": 0,
+        "animationFile": 14995,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 96,
+        "category": "Double team irish whip grapple",
+        "move": "Double Arm Drag",
+        "named": true,
+        "damage": 0,
+        "animationFile": 15018,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 104,
+        "category": "Running front grapple",
+        "move": "Running DDT 02",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16719,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 105,
+        "category": "Running back grapple",
+        "move": "Release German Suplex",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16779,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 108,
+        "category": "Front turnbuckle grapple weak",
+        "move": "Shoulder Thrusts",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15572,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 113,
+        "category": "Front turnbuckle grapple weak",
+        "move": "High Kick",
+        "named": true,
+        "damage": 8,
+        "animationFile": 15530,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 118,
+        "category": "Front turnbuckle grapple strong",
+        "move": "Superplex",
+        "named": true,
+        "damage": 22,
+        "animationFile": 15600,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 123,
+        "category": "Front turnbuckle grapple strong",
+        "move": "Knee Strikes",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15562,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 128,
+        "category": "Front turnbuckle grapple special",
+        "move": "Super Belly to Belly",
+        "named": true,
+        "damage": 22,
+        "animationFile": 15632,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 129,
+        "category": "Front turnbuckle grapple special",
+        "move": "Super Belly to Belly",
+        "named": true,
+        "damage": 22,
+        "animationFile": 15632,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 130,
+        "category": "Back turnbuckle grapple weak and strong",
+        "move": "Forearm Smash",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15706,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 132,
+        "category": "Back turnbuckle grapple weak and strong",
+        "move": "Forearm Smash",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15706,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 134,
+        "category": "Back turnbuckle grapple weak and strong",
+        "move": "Super Back Drop",
+        "named": true,
+        "damage": 28,
+        "animationFile": 15698,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 136,
+        "category": "Back turnbuckle grapple weak and strong",
+        "move": "Super Back Drop",
+        "named": true,
+        "damage": 28,
+        "animationFile": 15698,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 138,
+        "category": "Back turnbuckle grapple special",
+        "move": "Super Back Drop",
+        "named": true,
+        "damage": 28,
+        "animationFile": 15698,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 139,
+        "category": "Back turnbuckle grapple special",
+        "move": "Super Back Drop",
+        "named": true,
+        "damage": 28,
+        "animationFile": 15698,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 141,
+        "category": "Turnbuckle front counter grapple",
+        "move": "Throw",
+        "named": true,
+        "damage": 20,
+        "animationFile": 15720,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 142,
+        "category": "Turnbuckle back counter grapple",
+        "move": "Super Back Drop",
+        "named": true,
+        "damage": 22,
+        "animationFile": 15724,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 145,
+        "category": "Ringside grapple to apron",
+        "move": "Club to Chest",
+        "named": true,
+        "damage": 10,
+        "animationFile": 16827,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 146,
+        "category": "Ringside grapple to apron",
+        "move": "Suplex to Inside",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16825,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 147,
+        "category": "Ringside grapple to apron",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 148,
+        "category": "Apron counter grapple from apron",
+        "move": "Suplex Reverse",
+        "named": true,
+        "damage": 0,
+        "animationFile": 16831,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 149,
+        "category": "Apron strong grapple from apron",
+        "move": "Guillotine",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16839,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 150,
+        "category": "Apron strong grapple from apron",
+        "move": "Sunset Flip Over Ropes",
+        "named": true,
+        "damage": 23,
+        "animationFile": 16835,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 151,
+        "category": "Apron special grapple from apron",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 152,
+        "category": "Ringside counter grapple from apron",
+        "move": "Suplex Reversal to Inside",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16859,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 153,
+        "category": "Test of strength",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 155,
+        "category": "Special ground grapple facing up, head",
+        "move": "Armbar 01",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15737,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 156,
+        "category": "Special ground grapple facing down, head",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 157,
+        "category": "Special ground grapple facing up, feet",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 158,
+        "category": "Special ground grapple facing down, feet",
+        "move": "Ankle Lock",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16504,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 163,
+        "category": "Double team front grapple",
+        "move": "Double Suplex",
+        "named": true,
+        "damage": 30,
+        "animationFile": 16882,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 164,
+        "category": "Double team back grapple",
+        "move": "Double Atomic Drop",
+        "named": true,
+        "damage": 30,
+        "animationFile": 16900,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 165,
+        "category": "Double team sandwich grapple",
+        "move": "Double Piledriver",
+        "named": true,
+        "damage": 30,
+        "animationFile": 16909,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 168,
+        "category": "Double team reversals, counter attack",
+        "move": "Punching Reversal",
+        "named": true,
+        "damage": 10,
+        "animationFile": 16918,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 172,
+        "category": "Standing weak arm striking",
+        "move": "Body Punch",
+        "named": true,
+        "damage": 2,
+        "animationFile": 13095,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 173,
+        "category": "Standing weak arm striking",
+        "move": "Elbow Strike",
+        "named": true,
+        "damage": 2,
+        "animationFile": 13093,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 174,
+        "category": "Standing weak leg striking",
+        "move": "Front Kick 02",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13117,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 175,
+        "category": "Standing weak leg striking",
+        "move": "Middle Kick 01",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13111,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 176,
+        "category": "Strong striking",
+        "move": "Front Kick 05",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13120,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 177,
+        "category": "Strong striking",
+        "move": "Middle Kick 01",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13111,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 178,
+        "category": "Strong striking",
+        "move": "Front Kick 05",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13120,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 179,
+        "category": "Strong striking",
+        "move": "Middle Kick 01",
+        "named": true,
+        "damage": 3,
+        "animationFile": 13111,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 180,
+        "category": "Counter punch",
+        "move": "Strong Attack [D-Pad/B]",
+        "named": true,
+        "damage": 0,
+        "animationFile": 15346,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 181,
+        "category": "Special counter punch",
+        "move": "Front Special Grapple",
+        "named": true,
+        "damage": 0,
+        "animationFile": 15402,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 182,
+        "category": "Enzuigiri kick reversal",
+        "move": null,
+        "named": true,
+        "damage": 15,
+        "animationFile": 15454,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 183,
+        "category": "Counter kick",
+        "move": "Dragon Screw Counter 01",
+        "named": true,
+        "damage": 12,
+        "animationFile": 15404,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 184,
+        "category": "Counter kick",
+        "move": "Elbow Crush Counter",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15414,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 185,
+        "category": "Special counter kick",
+        "move": "Standing Ankle Lock",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15438,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 186,
+        "category": "Strong striking",
+        "move": "Standing Clothesline 01",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15030,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 188,
+        "category": "Strong striking",
+        "move": "Punch 01",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15044,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 190,
+        "category": "Strong striking",
+        "move": "Thai Roundhouse Kick R",
+        "named": true,
+        "damage": 7,
+        "animationFile": 15133,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 192,
+        "category": "Running attack, opponent standing",
+        "move": "Shoulder Block",
+        "named": true,
+        "damage": 9,
+        "animationFile": 15256,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 194,
+        "category": "Running attack, opponent standing",
+        "move": "Jumping Back Elbow Attack",
+        "named": true,
+        "damage": 11,
+        "animationFile": 15281,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 196,
+        "category": "Running attack, opponent standing",
+        "move": "Spinning Wheel Kick 01",
+        "named": true,
+        "damage": 11,
+        "animationFile": 15240,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 198,
+        "category": "Running attack, opponent standing",
+        "move": "Toe Kick",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15218,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 200,
+        "category": "Running attack, opponent in the corner",
+        "move": "Clothesline R 01",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15206,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 202,
+        "category": "Running attack, opponent in the corner",
+        "move": "High Flipping Drop Kick",
+        "named": true,
+        "damage": 10,
+        "animationFile": 15271,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 204,
+        "category": "Running attack, opponent in the corner",
+        "move": "Dropkick to Knee",
+        "named": true,
+        "damage": 11,
+        "animationFile": 15319,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 205,
+        "category": "Strong striking",
+        "move": "Flipping Dropkick",
+        "named": true,
+        "damage": 6,
+        "animationFile": 15065,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 207,
+        "category": "Irish whip to corner counter",
+        "move": "Boot to Face",
+        "named": true,
+        "damage": 3,
+        "animationFile": 15341,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 208,
+        "category": "Evasion",
+        "move": "Roll",
+        "named": true,
+        "damage": 0,
+        "animationFile": 15320,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 209,
+        "category": "Standing ground attack",
+        "move": "Soccer Kick 01",
+        "named": true,
+        "damage": 2,
+        "animationFile": 16524,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 210,
+        "category": "Standing ground attack",
+        "move": "Knee Drop 01",
+        "named": true,
+        "damage": 2,
+        "animationFile": 16532,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 211,
+        "category": "Running ground attack",
+        "move": "Elbow Drop 01",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16550,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 212,
+        "category": "Running ground attack",
+        "move": "Stomp",
+        "named": true,
+        "damage": 4,
+        "animationFile": 16554,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 213,
+        "category": "Sitting ground attack",
+        "move": "Low Kick 08",
+        "named": true,
+        "damage": 3,
+        "animationFile": 16168,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 214,
+        "category": "Sitting ground attack",
+        "move": "Knee Drop 03",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16216,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 215,
+        "category": "Running ground attack",
+        "move": "Stomp",
+        "named": true,
+        "damage": 4,
+        "animationFile": 16554,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 216,
+        "category": "Running ground attack",
+        "move": "Stomp",
+        "named": true,
+        "damage": 4,
+        "animationFile": 16554,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 217,
+        "category": "Recovering attack",
+        "move": "Jumping Wheel Kick",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15729,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 218,
+        "category": "Apron attack to inside",
+        "move": "Roundhouse Kick",
+        "named": true,
+        "damage": 3,
+        "animationFile": 16862,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 219,
+        "category": "Apron attack to outside",
+        "move": "Strong Kick",
+        "named": true,
+        "damage": 2,
+        "animationFile": 16864,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 222,
+        "category": "Kick, stomp",
+        "move": "Kick",
+        "named": true,
+        "damage": 2,
+        "animationFile": 16867,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 223,
+        "category": "Sliding attack, stomp",
+        "move": "Stomp",
+        "named": true,
+        "damage": 2,
+        "animationFile": 16868,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 224,
+        "category": "Entry way taunt",
+        "move": "NONE",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17322,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 225,
+        "category": "Walking moves",
+        "move": "GENERIC 01",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17512,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 226,
+        "category": "In-ring entrance taunt",
+        "move": "Shamrock",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17376,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 227,
+        "category": "Standing taunts, Angle 001 to taunt 067",
+        "move": "Taunt 071",
+        "named": true,
+        "damage": 0,
+        "animationFile": 16994,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 228,
+        "category": "Standing taunts, Angle 001 to taunt 067",
+        "move": "Taunt 071",
+        "named": true,
+        "damage": 0,
+        "animationFile": 16994,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 229,
+        "category": "Standing taunts, Angle 001 to taunt 067",
+        "move": "Taunt 071",
+        "named": true,
+        "damage": 0,
+        "animationFile": 16994,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 230,
+        "category": "Standing taunts, Angle 001 to taunt 067",
+        "move": "Taunt 128",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17006,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 231,
+        "category": "Ducking taunts, Austin to taunt 009",
+        "move": "Taunt 009",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17125,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 232,
+        "category": "Corner taunt, Austin to taunt 006",
+        "move": "Taunt 009",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17141,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 233,
+        "category": "Turnbuckle taunts, Venis 009",
+        "move": "Taunt 005",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17147,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 234,
+        "category": "Apron taunts, Michaels 006",
+        "move": "Taunt 001",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17153,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 235,
+        "category": "Standing taunts, Angle 001 to taunt 067",
+        "move": "Taunt 128",
+        "named": true,
+        "damage": 0,
+        "animationFile": 17006,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 236,
+        "category": "Upper body facing up ground grapple",
+        "move": "Clutching Punch",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15889,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 238,
+        "category": "Upper body facing down ground grapple",
+        "move": "Rear Naked Choke",
+        "named": true,
+        "damage": 5,
+        "animationFile": 15985,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 240,
+        "category": "Lower body facing up ground grapple",
+        "move": "Side Leg Lock",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16290,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 242,
+        "category": "Lower body facing down ground grapple",
+        "move": "Reverse Achilles Lock",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16440,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 244,
+        "category": "Upper body sitting up ground grapple",
+        "move": "Sleeper Hold",
+        "named": true,
+        "damage": 8,
+        "animationFile": 16053,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 246,
+        "category": "Upper body sitting down ground grapple",
+        "move": "Camel Clutch",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16143,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 248,
+        "category": "Lower body grapple sitting up, leg crush and elbow drop",
+        "move": null,
+        "named": true,
+        "damage": 10,
+        "animationFile": 17314,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 250,
+        "category": "Sitting down grapple feet, knee smash",
+        "move": null,
+        "named": true,
+        "damage": 10,
+        "animationFile": 17318,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 252,
+        "category": "Armbar reversal",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 253,
+        "category": "Armbar double reversal",
+        "move": "Triangle Hold",
+        "named": true,
+        "damage": 5,
+        "animationFile": 16268,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 254,
+        "category": "Rear naked choke",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 255,
+        "category": "Rear naked choke reversal",
+        "move": "Ebi",
+        "named": true,
+        "damage": 10,
+        "animationFile": 16288,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 256,
+        "category": "Flying attack, standing opponent",
+        "move": "Double Axe Handle",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16566,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 257,
+        "category": "Flying attack, standing opponent",
+        "move": "Missile Dropkick",
+        "named": true,
+        "damage": 20,
+        "animationFile": 16574,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 261,
+        "category": "Flying attack, strong laying opponent",
+        "move": "Back Elbow Drop",
+        "named": true,
+        "damage": 25,
+        "animationFile": 16635,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 262,
+        "category": "Flying attack, strong laying opponent",
+        "move": "Knee Drop",
+        "named": true,
+        "damage": 25,
+        "animationFile": 16643,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 263,
+        "category": "Flying attack, standing opponent",
+        "move": "Double Axe Handle",
+        "named": true,
+        "damage": 15,
+        "animationFile": 16566,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 264,
+        "category": "Flying attack, strong laying opponent",
+        "move": "Back Elbow Drop",
+        "named": true,
+        "damage": 25,
+        "animationFile": 16635,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 265,
+        "category": "Running diving attack",
+        "move": "Baseball Slide",
+        "named": true,
+        "damage": 20,
+        "animationFile": 16800,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 266,
+        "category": "Running diving attack",
+        "move": "Baseball Slide",
+        "named": true,
+        "damage": 20,
+        "animationFile": 16800,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 267,
+        "category": "Diving taunt",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 268,
+        "category": "Flying attack to outside",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 269,
+        "category": "Rope inside attack",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 270,
+        "category": "Turnbuckle inside attack",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 271,
+        "category": "Flying attack from apron",
+        "move": "Dropping Elbow",
+        "named": true,
+        "damage": 12,
+        "animationFile": 16820,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 272,
+        "category": "Running flying attack from apron",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 273,
+        "category": "Flying attack to ring from apron, standing opponent",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 274,
+        "category": "Flying attack to ring from apron, laying opponent",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 275,
+        "category": "Flying attack to ring from apron, standing opponent",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 278,
+        "category": "Rebound flying attack",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 279,
+        "category": "Double team attack, opponent on shoulders",
+        "move": "Doomsday Device",
+        "named": true,
+        "damage": 30,
+        "animationFile": 16940,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 280,
+        "category": "Double team attack, opponent on shoulders",
+        "move": "Doomsday Device",
+        "named": true,
+        "damage": 30,
+        "animationFile": 16940,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 281,
+        "category": "Double team attack to ring for the doomsday device",
+        "move": null,
+        "named": false,
+        "damage": 0,
+        "animationFile": null,
+        "opponentAnimation": null
+      },
+      {
+        "slot": 287,
+        "category": "Weak grapple (B)",
+        "move": "Piledriver 04",
+        "named": true,
+        "damage": 18,
+        "animationFile": 13277,
+        "opponentAnimation": {
+          "file": 13278,
+          "turn": 512,
+          "distance": 63,
+          "status": "likely"
+        }
+      }
+    ]
+  },
+  "look": {
+    "costumes": [
+      {
+        "costume": 1,
+        "rosterIndex": 96,
+        "female": false,
+        "costumeSet": 1,
+        "portrait": {
+          "file": 17865,
+          "width": 64,
+          "height": 64
+        },
+        "palette": [
+          "#000000",
+          "#313131",
+          "#dedede",
+          "#ad1818",
+          "#314ab5",
+          "#087b31",
+          "#e79400",
+          "#de4a21",
+          "#7b2184",
+          "#bd21bd",
+          "#c68c08",
+          "#4a4a4a",
+          "#d6d6e7",
+          "#ce5a5a",
+          "#6b8cd6",
+          "#299c63",
+          "#e7b552",
+          "#de6b42",
+          "#a563b5",
+          "#bd5a9c",
+          "#c6ad29",
+          "#313931",
+          "#e7e7d6",
+          "#631008",
+          "#31295a",
+          "#084229",
+          "#733108",
+          "#7b1810",
+          "#522152",
+          "#6b184a",
+          "#a58c08",
+          "#bdbdd6"
+        ],
+        "fields": {
+          "body_type": {
+            "label": "Build",
+            "group": "Body",
+            "value": 2,
+            "display": "STEVEN RICHARDS, TRIPLE H and 13 more",
+            "range": [
+              0,
+              12
+            ]
+          },
+          "head_shape": {
+            "label": "Head shape",
+            "group": "Head",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              6
+            ]
+          },
+          "face_number": {
+            "label": "Face",
+            "group": "Head",
+            "value": 22,
+            "display": "Style 22",
+            "range": [
+              0,
+              126
+            ]
+          },
+          "skin_color": {
+            "label": "Skin colour",
+            "group": "Head",
+            "value": 3,
+            "display": "Style 3",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "hair_type": {
+            "label": "Hair style",
+            "group": "Head",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              21
+            ]
+          },
+          "hair_color": {
+            "label": "Hair colour",
+            "group": "Head",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "front_hair": {
+            "label": "Front hair",
+            "group": "Head",
+            "value": 17,
+            "display": "Style 17",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "facial_hair": {
+            "label": "Facial hair",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "masks_etc": {
+            "label": "Mask",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "hats_caps": {
+            "label": "Hat",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              9
+            ]
+          },
+          "hats_caps_color": {
+            "label": "Hat colour",
+            "group": "Head",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire": {
+            "label": "Ring attire",
+            "group": "Attire",
+            "value": 7,
+            "display": "Style 7",
+            "range": [
+              0,
+              127
+            ]
+          },
+          "ring_attire_color_1": {
+            "label": "Ring attire colour 1",
+            "group": "Attire",
+            "value": 5,
+            "display": "Colour 5",
+            "range": [
+              0,
+              31
+            ],
+            "colour": "#087b31"
+          },
+          "ring_attire_color_2": {
+            "label": "Ring attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire": {
+            "label": "Upper attire",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              124
+            ]
+          },
+          "upper_attire_color_1": {
+            "label": "Upper attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire_color_2": {
+            "label": "Upper attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "tattoo": {
+            "label": "Tattoo",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              29
+            ]
+          },
+          "gloves": {
+            "label": "Gloves",
+            "group": "Attire",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "gloves_color": {
+            "label": "Gloves colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "wristband": {
+            "label": "Wristbands",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "wristband_color": {
+            "label": "Wristbands colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_elbow_pad": {
+            "label": "Left elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "left_elbow_pad_color": {
+            "label": "Left elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_elbow_pad": {
+            "label": "Right elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "right_elbow_pad_color": {
+            "label": "Right elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_knee_pad": {
+            "label": "Left knee pad",
+            "group": "Attire",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "left_knee_pad_color": {
+            "label": "Left knee pad colour",
+            "group": "Attire",
+            "value": 5,
+            "display": "Colour 5",
+            "range": [
+              0,
+              31
+            ],
+            "colour": "#087b31"
+          },
+          "right_knee_pad": {
+            "label": "Right knee pad",
+            "group": "Attire",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "right_knee_pad_color": {
+            "label": "Right knee pad colour",
+            "group": "Attire",
+            "value": 5,
+            "display": "Colour 5",
+            "range": [
+              0,
+              31
+            ],
+            "colour": "#087b31"
+          },
+          "boots": {
+            "label": "Boots",
+            "group": "Attire",
+            "value": 22,
+            "display": "Style 22",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "boots_color_1": {
+            "label": "Boots colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots_color_2": {
+            "label": "Boots colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire": {
+            "label": "Entrance attire",
+            "group": "Entrance",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "entrance_attire_color_1": {
+            "label": "Entrance attire colour 1",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire_color_2": {
+            "label": "Entrance attire colour 2",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          }
+        }
+      },
+      {
+        "costume": 2,
+        "rosterIndex": 97,
+        "female": false,
+        "costumeSet": 1,
+        "portrait": {
+          "file": 17865,
+          "width": 64,
+          "height": 64
+        },
+        "palette": [
+          "#000000",
+          "#313131",
+          "#dedede",
+          "#ad1818",
+          "#314ab5",
+          "#087b31",
+          "#e79400",
+          "#de4a21",
+          "#7b2184",
+          "#bd21bd",
+          "#c68c08",
+          "#4a4a4a",
+          "#d6d6e7",
+          "#ce5a5a",
+          "#6b8cd6",
+          "#299c63",
+          "#e7b552",
+          "#de6b42",
+          "#a563b5",
+          "#bd5a9c",
+          "#c6ad29",
+          "#313931",
+          "#e7e7d6",
+          "#631008",
+          "#31295a",
+          "#084229",
+          "#733108",
+          "#7b1810",
+          "#522152",
+          "#6b184a",
+          "#a58c08",
+          "#bdbdd6"
+        ],
+        "fields": {
+          "body_type": {
+            "label": "Build",
+            "group": "Body",
+            "value": 2,
+            "display": "STEVEN RICHARDS, TRIPLE H and 13 more",
+            "range": [
+              0,
+              12
+            ]
+          },
+          "head_shape": {
+            "label": "Head shape",
+            "group": "Head",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              6
+            ]
+          },
+          "face_number": {
+            "label": "Face",
+            "group": "Head",
+            "value": 22,
+            "display": "Style 22",
+            "range": [
+              0,
+              126
+            ]
+          },
+          "skin_color": {
+            "label": "Skin colour",
+            "group": "Head",
+            "value": 3,
+            "display": "Style 3",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "hair_type": {
+            "label": "Hair style",
+            "group": "Head",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              21
+            ]
+          },
+          "hair_color": {
+            "label": "Hair colour",
+            "group": "Head",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "front_hair": {
+            "label": "Front hair",
+            "group": "Head",
+            "value": 17,
+            "display": "Style 17",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "facial_hair": {
+            "label": "Facial hair",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "masks_etc": {
+            "label": "Mask",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "hats_caps": {
+            "label": "Hat",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              9
+            ]
+          },
+          "hats_caps_color": {
+            "label": "Hat colour",
+            "group": "Head",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire": {
+            "label": "Ring attire",
+            "group": "Attire",
+            "value": 7,
+            "display": "Style 7",
+            "range": [
+              0,
+              127
+            ]
+          },
+          "ring_attire_color_1": {
+            "label": "Ring attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire_color_2": {
+            "label": "Ring attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire": {
+            "label": "Upper attire",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              124
+            ]
+          },
+          "upper_attire_color_1": {
+            "label": "Upper attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire_color_2": {
+            "label": "Upper attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "tattoo": {
+            "label": "Tattoo",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              29
+            ]
+          },
+          "gloves": {
+            "label": "Gloves",
+            "group": "Attire",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "gloves_color": {
+            "label": "Gloves colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "wristband": {
+            "label": "Wristbands",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "wristband_color": {
+            "label": "Wristbands colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_elbow_pad": {
+            "label": "Left elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "left_elbow_pad_color": {
+            "label": "Left elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_elbow_pad": {
+            "label": "Right elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "right_elbow_pad_color": {
+            "label": "Right elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_knee_pad": {
+            "label": "Left knee pad",
+            "group": "Attire",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "left_knee_pad_color": {
+            "label": "Left knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_knee_pad": {
+            "label": "Right knee pad",
+            "group": "Attire",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "right_knee_pad_color": {
+            "label": "Right knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots": {
+            "label": "Boots",
+            "group": "Attire",
+            "value": 24,
+            "display": "Style 24",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "boots_color_1": {
+            "label": "Boots colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots_color_2": {
+            "label": "Boots colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire": {
+            "label": "Entrance attire",
+            "group": "Entrance",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "entrance_attire_color_1": {
+            "label": "Entrance attire colour 1",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire_color_2": {
+            "label": "Entrance attire colour 2",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          }
+        }
+      },
+      {
+        "costume": 3,
+        "rosterIndex": 98,
+        "female": false,
+        "costumeSet": 1,
+        "portrait": {
+          "file": 17865,
+          "width": 64,
+          "height": 64
+        },
+        "palette": [
+          "#000000",
+          "#313131",
+          "#dedede",
+          "#ad1818",
+          "#314ab5",
+          "#087b31",
+          "#e79400",
+          "#de4a21",
+          "#7b2184",
+          "#bd21bd",
+          "#c68c08",
+          "#4a4a4a",
+          "#d6d6e7",
+          "#ce5a5a",
+          "#6b8cd6",
+          "#299c63",
+          "#e7b552",
+          "#de6b42",
+          "#a563b5",
+          "#bd5a9c",
+          "#c6ad29",
+          "#313931",
+          "#e7e7d6",
+          "#631008",
+          "#31295a",
+          "#084229",
+          "#733108",
+          "#7b1810",
+          "#522152",
+          "#6b184a",
+          "#a58c08",
+          "#bdbdd6"
+        ],
+        "fields": {
+          "body_type": {
+            "label": "Build",
+            "group": "Body",
+            "value": 2,
+            "display": "STEVEN RICHARDS, TRIPLE H and 13 more",
+            "range": [
+              0,
+              12
+            ]
+          },
+          "head_shape": {
+            "label": "Head shape",
+            "group": "Head",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              6
+            ]
+          },
+          "face_number": {
+            "label": "Face",
+            "group": "Head",
+            "value": 22,
+            "display": "Style 22",
+            "range": [
+              0,
+              126
+            ]
+          },
+          "skin_color": {
+            "label": "Skin colour",
+            "group": "Head",
+            "value": 3,
+            "display": "Style 3",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "hair_type": {
+            "label": "Hair style",
+            "group": "Head",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              21
+            ]
+          },
+          "hair_color": {
+            "label": "Hair colour",
+            "group": "Head",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "front_hair": {
+            "label": "Front hair",
+            "group": "Head",
+            "value": 17,
+            "display": "Style 17",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "facial_hair": {
+            "label": "Facial hair",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "masks_etc": {
+            "label": "Mask",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "hats_caps": {
+            "label": "Hat",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              9
+            ]
+          },
+          "hats_caps_color": {
+            "label": "Hat colour",
+            "group": "Head",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire": {
+            "label": "Ring attire",
+            "group": "Attire",
+            "value": 18,
+            "display": "Style 18",
+            "range": [
+              0,
+              127
+            ]
+          },
+          "ring_attire_color_1": {
+            "label": "Ring attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire_color_2": {
+            "label": "Ring attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire": {
+            "label": "Upper attire",
+            "group": "Attire",
+            "value": 33,
+            "display": "Style 33",
+            "range": [
+              0,
+              124
+            ]
+          },
+          "upper_attire_color_1": {
+            "label": "Upper attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire_color_2": {
+            "label": "Upper attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "tattoo": {
+            "label": "Tattoo",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              29
+            ]
+          },
+          "gloves": {
+            "label": "Gloves",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "gloves_color": {
+            "label": "Gloves colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "wristband": {
+            "label": "Wristbands",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "wristband_color": {
+            "label": "Wristbands colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_elbow_pad": {
+            "label": "Left elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "left_elbow_pad_color": {
+            "label": "Left elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_elbow_pad": {
+            "label": "Right elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "right_elbow_pad_color": {
+            "label": "Right elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_knee_pad": {
+            "label": "Left knee pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "left_knee_pad_color": {
+            "label": "Left knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_knee_pad": {
+            "label": "Right knee pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "right_knee_pad_color": {
+            "label": "Right knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots": {
+            "label": "Boots",
+            "group": "Attire",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "boots_color_1": {
+            "label": "Boots colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots_color_2": {
+            "label": "Boots colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire": {
+            "label": "Entrance attire",
+            "group": "Entrance",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "entrance_attire_color_1": {
+            "label": "Entrance attire colour 1",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire_color_2": {
+            "label": "Entrance attire colour 2",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          }
+        }
+      },
+      {
+        "costume": 4,
+        "rosterIndex": 99,
+        "female": false,
+        "costumeSet": 1,
+        "portrait": {
+          "file": 17865,
+          "width": 64,
+          "height": 64
+        },
+        "palette": [
+          "#000000",
+          "#313131",
+          "#dedede",
+          "#ad1818",
+          "#314ab5",
+          "#087b31",
+          "#e79400",
+          "#de4a21",
+          "#7b2184",
+          "#bd21bd",
+          "#c68c08",
+          "#4a4a4a",
+          "#d6d6e7",
+          "#ce5a5a",
+          "#6b8cd6",
+          "#299c63",
+          "#e7b552",
+          "#de6b42",
+          "#a563b5",
+          "#bd5a9c",
+          "#c6ad29",
+          "#313931",
+          "#e7e7d6",
+          "#631008",
+          "#31295a",
+          "#084229",
+          "#733108",
+          "#7b1810",
+          "#522152",
+          "#6b184a",
+          "#a58c08",
+          "#bdbdd6"
+        ],
+        "fields": {
+          "body_type": {
+            "label": "Build",
+            "group": "Body",
+            "value": 2,
+            "display": "STEVEN RICHARDS, TRIPLE H and 13 more",
+            "range": [
+              0,
+              12
+            ]
+          },
+          "head_shape": {
+            "label": "Head shape",
+            "group": "Head",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              6
+            ]
+          },
+          "face_number": {
+            "label": "Face",
+            "group": "Head",
+            "value": 22,
+            "display": "Style 22",
+            "range": [
+              0,
+              126
+            ]
+          },
+          "skin_color": {
+            "label": "Skin colour",
+            "group": "Head",
+            "value": 3,
+            "display": "Style 3",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "hair_type": {
+            "label": "Hair style",
+            "group": "Head",
+            "value": 2,
+            "display": "Style 2",
+            "range": [
+              0,
+              21
+            ]
+          },
+          "hair_color": {
+            "label": "Hair colour",
+            "group": "Head",
+            "value": 5,
+            "display": "Style 5",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "front_hair": {
+            "label": "Front hair",
+            "group": "Head",
+            "value": 17,
+            "display": "Style 17",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "facial_hair": {
+            "label": "Facial hair",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "masks_etc": {
+            "label": "Mask",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "hats_caps": {
+            "label": "Hat",
+            "group": "Head",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              9
+            ]
+          },
+          "hats_caps_color": {
+            "label": "Hat colour",
+            "group": "Head",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire": {
+            "label": "Ring attire",
+            "group": "Attire",
+            "value": 20,
+            "display": "Style 20",
+            "range": [
+              0,
+              127
+            ]
+          },
+          "ring_attire_color_1": {
+            "label": "Ring attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "ring_attire_color_2": {
+            "label": "Ring attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire": {
+            "label": "Upper attire",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              124
+            ]
+          },
+          "upper_attire_color_1": {
+            "label": "Upper attire colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "upper_attire_color_2": {
+            "label": "Upper attire colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "tattoo": {
+            "label": "Tattoo",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              29
+            ]
+          },
+          "gloves": {
+            "label": "Gloves",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "gloves_color": {
+            "label": "Gloves colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "wristband": {
+            "label": "Wristbands",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "wristband_color": {
+            "label": "Wristbands colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_elbow_pad": {
+            "label": "Left elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "left_elbow_pad_color": {
+            "label": "Left elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_elbow_pad": {
+            "label": "Right elbow pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              7
+            ]
+          },
+          "right_elbow_pad_color": {
+            "label": "Right elbow pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "left_knee_pad": {
+            "label": "Left knee pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "left_knee_pad_color": {
+            "label": "Left knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "right_knee_pad": {
+            "label": "Right knee pad",
+            "group": "Attire",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              15
+            ]
+          },
+          "right_knee_pad_color": {
+            "label": "Right knee pad colour",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots": {
+            "label": "Boots",
+            "group": "Attire",
+            "value": 1,
+            "display": "Style 1",
+            "range": [
+              0,
+              63
+            ]
+          },
+          "boots_color_1": {
+            "label": "Boots colour 1",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "boots_color_2": {
+            "label": "Boots colour 2",
+            "group": "Attire",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire": {
+            "label": "Entrance attire",
+            "group": "Entrance",
+            "value": 0,
+            "display": "None",
+            "range": [
+              0,
+              31
+            ]
+          },
+          "entrance_attire_color_1": {
+            "label": "Entrance attire colour 1",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          },
+          "entrance_attire_color_2": {
+            "label": "Entrance attire colour 2",
+            "group": "Entrance",
+            "value": 0,
+            "display": "Default",
+            "range": [
+              0,
+              31
+            ],
+            "colour": null
+          }
+        }
+      }
+    ]
+  },
+  "source": {
+    "game": "WWF No Mercy (NTSC-U v1.1)",
+    "extractedWith": "AKI Anvil",
+    "raw": {
+      "wrestler_id4": 776,
+      "wrestler_id2": 25,
+      "theme_song": 4,
+      "entrance_video": 30,
+      "height": 13,
+      "unknown_07": 0,
+      "weight": 135,
+      "moveset_file_index": 552,
+      "params_file_index": 551,
+      "appearance_index": 96,
+      "profile_index": 78,
+      "padding": 0
+    }
+  }
+}

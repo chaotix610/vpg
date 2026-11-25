@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "royal_rumble_barricade",
+  "displayName": "Royal Rumble Barricade",
+  "kind": "barricade",
+  "glb": "assets/environments/arenas/shared/models/barricade/royal_rumble_barricade.glb"
+}

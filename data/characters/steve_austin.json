@@ -1,0 +1,5 @@
+{
+  "$schema": "../../schemas/characters.schema.json",
+  "name": "Steve Austin",
+  "glb": "assets/characters/models/steve-austin.glb"
+}

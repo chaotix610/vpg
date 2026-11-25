@@ -1,0 +1,5 @@
+{
+  "$schema": "../../schemas/characters.schema.json",
+  "name": "AKI Man",
+  "glb": "assets/characters/models/aki-man.glb"
+}

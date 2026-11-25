@@ -1,0 +1,128 @@
+/*
+ * Global UI styles: font faces, shared design tokens for Main Menus and
+ * Configuration Menus, and the main menu cursor glow animation.
+ */
+
+@font-face {
+  font-family: "VPG XFiles";
+  src: url("/assets/ui/fonts/xfiles.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VPG Impact";
+  src: url("/assets/ui/fonts/Impact.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VPG Impact";
+  src: url("/assets/ui/fonts/Impact.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VPG Retropix";
+  src:
+    url("/assets/ui/fonts/retropix/retropix.otf.woff2") format("woff2"),
+    url("/assets/ui/fonts/retropix/retropix.otf") format("opentype"),
+    url("/assets/ui/fonts/retropix/retropix.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VPG Retropix";
+  src:
+    url("/assets/ui/fonts/retropix/retropix.otf.woff2") format("woff2"),
+    url("/assets/ui/fonts/retropix/retropix.otf") format("opentype"),
+    url("/assets/ui/fonts/retropix/retropix.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  color-scheme: dark;
+
+  /* ------------------------------------------------ Shared typography */
+  --vpg-font-display: "VPG XFiles", Impact, "Arial Black", sans-serif;
+  --vpg-font-body: "VPG Impact", Impact, "Arial Black", sans-serif;
+  --vpg-font-menu-item: "VPG Impact", Impact, "Arial Black", sans-serif;
+  --vpg-font-pixel: "VPG Retropix", "Courier New", ui-monospace, monospace;
+
+  /* ------------------------------------------------ Main Menus tokens */
+  --vpg-frame-color: #ffffff;
+  --vpg-frame-width: 1px;
+  --vpg-panel-bg: rgba(54, 45, 187, 0.35);
+  --vpg-heading-bg: rgba(54, 45, 187, 0.48);
+  --vpg-panel-glow: #add8e6;
+  --vpg-modal-bg: #1a0d4a;
+  --vpg-modal-border: #b8e0f0;
+  --vpg-modal-backdrop: rgba(0, 0, 0, 0.45);
+  --vpg-main-bg: #0b0e14;
+  --vpg-main-surface: #141a24;
+  --vpg-main-border: rgba(255, 255, 255, 0.3);
+  --vpg-main-modal-border: rgba(255, 255, 255, 0.18);
+  --vpg-main-modal-scrim: rgba(6, 8, 12, 0.82);
+  --vpg-main-status: #ffc83d;
+  --vpg-item-size: clamp(26px, 2.65vw, 34px);
+  --vpg-item-color-idle: #ffffff;
+  --vpg-item-color-active: #f28f3d;
+  --vpg-item-color-disabled: #888888;
+  --vpg-item-stroke: #000000;
+  --vpg-state-transition: 0.2s ease;
+  --vpg-page-transition: 0.25s ease-out;
+  --vpg-modal-transition: 0.18s ease-out;
+
+  /* ------------------------------------------------ Configuration Menus tokens */
+  --vpg-cfg-bg: #070914;
+  --vpg-cfg-text: #f4f8ff;
+  --vpg-cfg-text-active: #0e071a;
+  --vpg-cfg-crumb-primary: #b6ff74;
+  --vpg-cfg-crumb-secondary: #46a6ff;
+  --vpg-cfg-crumb-tertiary: #f4f7ff;
+  --vpg-cfg-bar-idle: linear-gradient(
+    90deg,
+    rgba(34, 76, 150, 0.96) 0%,
+    rgba(35, 78, 152, 0.92) 82%,
+    rgba(35, 78, 152, 0.62) 100%
+  );
+  --vpg-cfg-bar-active: linear-gradient(90deg, #e0c7ff 0%, #cca8ff 80%, #b58bff 100%);
+  --vpg-cfg-bar-typing: linear-gradient(90deg, #a8e4ff 0%, #7cc8ff 100%);
+  --vpg-cfg-bar-danger: linear-gradient(90deg, #ffb4be 0%, #ff7b8d 100%);
+  --vpg-cfg-frame-border: #cca8ff;
+  --vpg-cfg-frame-glow: rgba(176, 118, 255, 0.35);
+  --vpg-cfg-panel-bg: rgba(12, 16, 38, 0.88);
+  --vpg-cfg-modal-bg: #101634;
+  --vpg-cfg-accent-lime: #b6ff74;
+  --vpg-cfg-accent-amber: #ffd089;
+  --vpg-cfg-accent-danger: #ff7b8d;
+
+  background: #050507;
+  font-family: var(--vpg-font-body);
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow: -15px 0 8px rgba(0, 248, 37, 0.5), 15px 0 8px rgba(0, 248, 37, 0.5), 25px 0 8px rgba(0, 248, 37, 0.5), -25px 0 8px rgba(0, 248, 37, 0.5);
+  }
+  50% {
+    text-shadow: -35px 0 25px rgba(0, 248, 37, 1), 35px 0 25px rgba(0, 248, 37, 1), 45px 0 25px rgba(0, 248, 37, 1), -45px 0 25px rgba(0, 248, 37, 1), 0 0 30px rgba(0, 248, 37, 0.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes glowPulse {
+    0%, 100% {
+      text-shadow: 0 0 8px rgba(242, 143, 61, 0.6), 0 0 18px rgba(242, 143, 61, 0.3);
+    }
+  }
+}

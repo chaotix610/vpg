@@ -1,0 +1,680 @@
+<!-- Vue presentation module. Teaching focus: how reactive screen state calls domain stores and presents results without owning gameplay rules. File: src/ui/ControlMapper.vue -->
+<template>
+  <div class="mapper">
+    <h1 class="mapper__title">Controls</h1>
+    <p class="mapper__hint">
+      <template v-if="listeningFor">
+        Press or click an input for <strong>{{ label(listeningFor) }}</strong>.
+        Keyboard, mouse, gamepad buttons, and stick directions are supported.
+      </template>
+      <template v-else>
+        Select a controller button, then press or click an input.
+        <kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> move &middot; <kbd>Enter</kbd> select
+        &middot; <kbd>{{ keyLabel("b") }}</kbd> back
+      </template>
+    </p>
+    <button
+      v-if="listeningFor && !conflict"
+      class="mapper__cancel"
+      type="button"
+      @click="cancelListening"
+    >
+      Cancel rebinding
+    </button>
+
+    <div class="mapper__layout">
+      <section class="controller-panel" aria-label="Interactive Nintendo 64 controller">
+        <div class="controller">
+          <img class="controller__body" :src="controllerImage" alt="Nintendo 64 controller" />
+          <button
+            v-for="target in targets"
+            :key="target.control"
+            type="button"
+            class="controller__target"
+            :class="{
+              'controller__target--active': focusArea === 'controller' && rows[cursor]?.key === target.control,
+              'controller__target--listening': listeningFor === target.control,
+              'controller__target--rear': target.rear,
+            }"
+            :style="{ left: target.x + '%', top: target.y + '%', width: target.width + '%', height: target.height + '%' }"
+            :aria-label="`${label(target.control)}: ${keyLabel(target.control)}. Click to rebind.`"
+            :title="`${label(target.control)} · ${keyLabel(target.control)}`"
+            :disabled="!!conflict"
+            :data-mapper-nav="`controller:${target.control}`"
+            @focus="selectControl(target.control)"
+            @click="activateControl(target.control)"
+          >
+            <img v-if="target.rear" :src="icon(target.control)" alt="" />
+            <span v-if="target.rear" class="controller__rear-key">{{ keyLabel(target.control) }}</span>
+            <span v-else-if="target.control.startsWith('controlStick')" class="controller__direction" aria-hidden="true">{{ direction(target.control) }}</span>
+            <span v-else class="sr-only">{{ label(target.control) }}</span>
+          </button>
+        </div>
+        <p class="controller-panel__caption">L / R shoulder buttons · Z rear trigger</p>
+        <div class="selection" aria-live="polite">
+          <img :src="icon(selectedControl)" alt="" />
+          <div>
+            <strong>{{ label(selectedControl) }}</strong>
+            <p>{{ listeningFor ? 'Waiting for input…' : keyLabel(selectedControl) }}</p>
+          </div>
+        </div>
+        <p class="controller-panel__save">Bindings save automatically.</p>
+      </section>
+    <ul class="rows" aria-label="Controller bindings and actions">
+      <li v-for="(row, index) in rows" :key="row.key">
+      <button
+        type="button"
+        class="row"
+        :class="{
+          'row--active': focusArea === 'bindings' && index === cursor,
+          'row--action': row.kind === 'action',
+          'row--listening': row.kind === 'binding' && listeningFor === row.control,
+        }"
+        :disabled="!!conflict"
+        :data-mapper-nav="`bindings:${row.key}`"
+        @focus="selectRow(index)"
+        @click="activate(index)"
+      >
+        <img v-if="row.kind === 'binding'" class="row__icon" :src="icon(row.control)" alt="" />
+        <span class="row__label">{{ row.label }}</span>
+        <span v-if="row.kind === 'binding'" class="row__key">
+          {{
+            listeningFor === row.control
+              ? "press a key"
+              : keyLabel(row.control)
+          }}
+        </span>
+      </button>
+      </li>
+    </ul>
+    </div>
+
+    <p class="mapper__status" role="status">{{ status }}</p>
+
+    <!-- Conflict confirmation. -->
+    <div v-if="conflict" class="modal">
+      <div class="modal__box" role="dialog" aria-modal="true" aria-label="Replace existing binding?">
+        <p class="modal__text">Replace existing binding?</p>
+        <p class="modal__detail">
+          <strong>{{ friendlyKey(conflict.binding) }}</strong> is bound to
+          <strong>{{ label(conflict.owner) }}</strong
+          >. Assigning it to <strong>{{ label(conflict.control) }}</strong> will
+          leave {{ label(conflict.owner) }} unbound.
+        </p>
+        <div class="modal__actions">
+          <button class="modal__button" @click="confirmConflict">
+            Replace (Enter)
+          </button>
+          <button class="modal__button" @click="cancelConflict">
+            Cancel (Esc)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import {
+  PAD_CONTROLS,
+  PAD_CONTROL_LABELS,
+  PadControl,
+  bindInput,
+  conflictForBinding,
+  describeBinding,
+  exportMapping,
+  keysForControl,
+  resetBindings,
+} from "@/input/controls";
+import {
+  bindingForPointer,
+  eventCode,
+  isMenuDown,
+  isMenuUp,
+  pollGamepadBindings,
+  virtualInputFor,
+  virtualInputForBinding,
+} from "@/input/VirtualController";
+import { playMenuCue } from "@/audio/menuAudio";
+
+import { requireAsset } from "@/content/assets";
+import { nextNavigationTarget, type NavigationDirection } from "./spatialNavigation";
+
+const controllerImage = requireAsset("assets/ui/textures/controller/n64-controller.svg");
+
+
+interface Target {
+  control: PadControl;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rear?: boolean;
+}
+
+const targets: Target[] = [
+  { control: "dpadUp", x: 23.35, y: 28.5, width: 6, height: 7 },
+  { control: "dpadDown", x: 23.35, y: 38.5, width: 6, height: 7 },
+  { control: "dpadLeft", x: 18.35, y: 33.5, width: 7, height: 6 },
+  { control: "dpadRight", x: 28.35, y: 33.5, width: 7, height: 6 },
+  { control: "controlStickUp", x: 51.35, y: 48, width: 9, height: 8 },
+  { control: "controlStickDown", x: 51.35, y: 59, width: 9, height: 8 },
+  { control: "controlStickLeft", x: 45.85, y: 53.5, width: 8, height: 9 },
+  { control: "controlStickRight", x: 56.85, y: 53.5, width: 8, height: 9 },
+  { control: "cUp", x: 81.7, y: 24.9, width: 6, height: 6 },
+  { control: "cDown", x: 81.7, y: 35.6, width: 6, height: 6 },
+  { control: "cLeft", x: 76.35, y: 30.25, width: 6, height: 6 },
+  { control: "cRight", x: 87.05, y: 30.25, width: 6, height: 6 },
+  { control: "a", x: 75.05, y: 41.4, width: 9, height: 9 },
+  { control: "b", x: 68.62, y: 34.9, width: 9, height: 9 },
+  { control: "start", x: 51.35, y: 34, width: 10, height: 10 },
+  { control: "l", x: 20, y: 8, width: 18, height: 13, rear: true },
+  { control: "r", x: 82, y: 8, width: 18, height: 13, rear: true },
+  { control: "z", x: 77, y: 75, width: 18, height: 15, rear: true },
+];
+
+type Row =
+  | { kind: "binding"; key: string; label: string; control: PadControl }
+  | { kind: "action"; key: string; label: string; action: "reset" | "export" | "back" };
+
+interface Conflict {
+  control: PadControl;
+  binding: string;
+  owner: PadControl;
+}
+
+export default defineComponent({
+  name: "ControlMapper",
+
+  emits: ["back"],
+
+  data() {
+    return {
+      controllerImage,
+      targets,
+      cursor: 0,
+      focusArea: "bindings" as "bindings" | "controller",
+      listeningFor: null as PadControl | null,
+      conflict: null as Conflict | null,
+      status: "",
+      /** Bumped to force the key column to re-read the mapping after a bind. */
+      revision: 0,
+      stopGamepadPolling: null as (() => void) | null,
+    };
+  },
+
+  computed: {
+    navigationId(): string {
+      return `${this.focusArea}:${this.rows[this.cursor].key}`;
+    },
+    selectedControl(): PadControl {
+      const row = this.rows[this.cursor];
+      return this.listeningFor ?? (row?.kind === "binding" ? row.control : "a");
+    },
+    rows(): Row[] {
+      const bindings: Row[] = PAD_CONTROLS.map((control) => ({
+        kind: "binding" as const,
+        key: control,
+        label: PAD_CONTROL_LABELS[control],
+        control,
+      }));
+      return [
+        ...bindings,
+        { kind: "action", key: "reset", label: "Reset Defaults", action: "reset" },
+        { kind: "action", key: "export", label: "Export JSON", action: "export" },
+        { kind: "action", key: "back", label: "Back", action: "back" },
+      ];
+    },
+  },
+
+  watch: {
+    // Keep keyboard selection visible on smaller screens.
+    navigationId() {
+      this.$nextTick(this.focusSelection);
+    },
+  },
+
+  mounted() {
+    this.$nextTick(this.focusSelection);
+    window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("pointerdown", this.onPointerDown, true);
+    this.stopGamepadPolling = pollGamepadBindings(this.onGamepadBinding);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("pointerdown", this.onPointerDown, true);
+    this.stopGamepadPolling?.();
+  },
+
+  methods: {
+    icon(control: PadControl): string {
+      const name = control.startsWith("dpad") ? "D-Pad"
+        : control.startsWith("controlStick") ? "Control_Stick"
+        : control.startsWith("c") ? "C"
+        : control === "start" ? "Start" : control.toUpperCase();
+      return requireAsset(`assets/ui/textures/controller/ButtonIcon-N64-${name}.svg`);
+    },
+
+    direction(control: PadControl): string {
+      if (control.endsWith("Up")) return "↑";
+      if (control.endsWith("Down")) return "↓";
+      if (control.endsWith("Left")) return "←";
+      return "→";
+    },
+
+    selectRow(index: number) {
+      this.cursor = index;
+      this.focusArea = "bindings";
+    },
+
+    selectControl(control: PadControl) {
+      this.cursor = this.rows.findIndex((row) => row.key === control);
+      this.focusArea = "controller";
+    },
+
+    activateControl(control: PadControl) {
+      this.selectControl(control);
+      this.activate(this.cursor, "controller");
+    },
+
+    focusSelection() {
+      if (this.conflict) return;
+      const root = this.$el as HTMLElement;
+      const selected = root.querySelector<HTMLButtonElement>(`[data-mapper-nav="${this.navigationId}"]`);
+      selected?.focus({ preventScroll: true });
+      selected?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    },
+
+    label(control: PadControl): string {
+      return PAD_CONTROL_LABELS[control];
+    },
+
+    keyLabel(control: PadControl): string {
+      // `revision` is read so Vue re-evaluates this after a rebind; the
+      // bindings live outside the reactive graph on purpose.
+      void this.revision;
+      const keys = keysForControl(control);
+      return keys.length ? keys.map(describeBinding).join(", ") : "unbound";
+    },
+
+    /** Turns a KeyboardEvent.code into something readable on screen. */
+    friendlyKey(code: string): string {
+      return describeBinding(code);
+    },
+
+    onKeyDown(event: KeyboardEvent) {
+      // The mapper owns the keyboard while it is open: without this, rebinding
+      // to a key the browser acts on (Space scrolling, arrows) fights the UI.
+      if (event.key === "Tab" && !this.listeningFor && !this.conflict) return;
+      // Let focused dialog/cancel buttons keep their native keyboard activation.
+      if ((event.key === "Enter" || event.key === " ") &&
+          event.target instanceof HTMLButtonElement && !event.target.dataset.mapperNav) return;
+      event.preventDefault();
+      if (event.repeat) return;
+
+      if (this.conflict) return this.onConflictKey(event);
+      if (this.listeningFor) return this.onListeningKey(event);
+      this.onNavigationKey(event);
+    },
+
+    onPointerDown(event: PointerEvent) {
+      if (!this.listeningFor || this.conflict) return;
+      if (event.target instanceof Element && event.target.closest(".mapper__cancel")) return;
+      const binding = bindingForPointer(event);
+      if (!binding) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.onListeningBinding(binding);
+    },
+
+    onGamepadBinding(binding: string) {
+      if (this.conflict) return;
+      if (this.listeningFor) return this.onListeningBinding(binding);
+      const input = virtualInputForBinding(binding);
+      if (input) this.onNavigationInput(input);
+    },
+
+    /**
+     * The raw key is what matters, not what it is bound to, so it can be moved
+     * off the control it already serves.
+     */
+    onListeningKey(event: KeyboardEvent) {
+      this.onListeningBinding(eventCode(event));
+    },
+
+    onListeningBinding(binding: string) {
+      const control = this.listeningFor!;
+      const owner = conflictForBinding(control, binding);
+      if (owner) {
+        this.conflict = { control, binding, owner };
+        this.listeningFor = null;
+        playMenuCue("deny");
+        return;
+      }
+
+      this.apply(control, binding);
+    },
+
+    onConflictKey(event: KeyboardEvent) {
+      const code = eventCode(event);
+      if (code === "Escape") return this.cancelConflict();
+      if (code === "Enter" || code === "NumpadEnter") return this.confirmConflict();
+    },
+
+    cancelListening() {
+      this.listeningFor = null;
+      this.status = "Rebinding cancelled.";
+      playMenuCue("back");
+      this.$nextTick(this.focusSelection);
+    },
+
+    onNavigationKey(event: KeyboardEvent) {
+      const input = virtualInputFor(event);
+      if (!input) return;
+
+      this.onNavigationInput(input);
+    },
+
+    onNavigationInput(input: ReturnType<typeof virtualInputFor>) {
+      if (!input) return;
+      if (isMenuUp(input)) return this.move("up");
+      if (isMenuDown(input)) return this.move("down");
+      if (input === "left" || input === "stickLeft") return this.move("left");
+      if (input === "right" || input === "stickRight") return this.move("right");
+      if (input === "a") return this.activate(this.cursor, this.focusArea);
+      if (input === "b") {
+        playMenuCue("back");
+        return this.$emit("back");
+      }
+    },
+
+    move(direction: NavigationDirection) {
+      const root = this.$el as HTMLElement;
+      const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-mapper-nav]:not(:disabled)"));
+      const targets = buttons.map((button) => {
+        const bounds = button.getBoundingClientRect();
+        return { id: button.dataset.mapperNav!, x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+      });
+      const next = nextNavigationTarget(targets, this.navigationId, direction);
+      if (!next) return;
+      buttons.find((button) => button.dataset.mapperNav === next)?.focus({ preventScroll: true });
+      this.status = "";
+      playMenuCue("move");
+    },
+
+    activate(index: number, area: "bindings" | "controller" = "bindings") {
+      if (this.conflict) return;
+      this.listeningFor = null;
+      this.cursor = index;
+      this.focusArea = area;
+      const row = this.rows[index];
+
+      if (row.kind === "binding") {
+        this.listeningFor = row.control;
+        this.status = "";
+        playMenuCue("select");
+        return;
+      }
+
+      if (row.action === "back") {
+        playMenuCue("back");
+        return this.$emit("back");
+      }
+      playMenuCue("select");
+      if (row.action === "reset") return this.reset();
+      if (row.action === "export") return this.exportJson();
+    },
+
+    apply(control: PadControl, binding: string) {
+      const { displaced } = bindInput(control, binding);
+      this.listeningFor = null;
+      this.revision += 1;
+      this.status = displaced
+        ? `${this.friendlyKey(binding)} bound to ${this.label(control)}, taken from ${this.label(displaced)}.`
+        : `${this.friendlyKey(binding)} bound to ${this.label(control)}.`;
+      playMenuCue("confirm");
+      this.$nextTick(this.focusSelection);
+    },
+
+    confirmConflict() {
+      const pending = this.conflict;
+      if (!pending) return;
+      this.conflict = null;
+      this.apply(pending.control, pending.binding);
+    },
+
+    cancelConflict() {
+      this.conflict = null;
+      this.status = "Rebinding cancelled.";
+      playMenuCue("back");
+      this.$nextTick(this.focusSelection);
+    },
+
+    reset() {
+      resetBindings();
+      this.revision += 1;
+      this.status = "Bindings restored to defaults.";
+      playMenuCue("confirm");
+    },
+
+    exportJson() {
+      const json = JSON.stringify(exportMapping(), null, 2);
+      const url = URL.createObjectURL(
+        new Blob([json], { type: "application/json" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "control-mappings.json";
+      link.click();
+      URL.revokeObjectURL(url);
+      this.status = "Exported control-mappings.json.";
+      playMenuCue("confirm");
+    },
+  },
+});
+</script>
+
+<style scoped>
+.mapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background-color: #0b0e14;
+  background-image: linear-gradient(rgba(11, 14, 20, 0.65), rgba(11, 14, 20, 0.8)),
+    url("/assets/ui/textures/artwork/crowd-1.png");
+  background-size: cover;
+  background-position: center;
+  color: #f2f5f8;
+  font-family: var(--vpg-font-body);
+}
+
+.mapper__title {
+  margin: 0 0 0.35rem;
+  font-family: var(--vpg-font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mapper__hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+
+.rows {
+  width: min(100%, 34rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Compact binding rows use steady borders and shadows to show selection. */
+.row {
+  display: flex;
+  width: 100%;
+  min-height: 2.6rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #ffffff18;
+  border-radius: 0.3rem;
+  background: #141a24;
+  color: var(--vpg-item-color-idle);
+  font-family: var(--vpg-font-menu-item);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--vpg-state-transition),
+    background-color var(--vpg-state-transition),
+    box-shadow var(--vpg-state-transition);
+}
+
+.row--action {
+  margin-top: 0.2rem;
+  opacity: 0.85;
+}
+
+.row--active,
+.row:hover,
+.row:focus-visible {
+  border-color: var(--vpg-item-color-active);
+  background: rgba(242, 143, 61, 0.12);
+  box-shadow: inset 3px 0 0 var(--vpg-item-color-active),
+    0 0 0 1px rgba(242, 143, 61, 0.16),
+    0 0 14px rgba(242, 143, 61, 0.2);
+}
+
+/* Listening beats active: the row is waiting on a keypress, not merely
+   selected, and must not read the same as the rest. */
+.row--listening,
+.row--listening:hover,
+.row--listening:focus-visible {
+  border-color: #6ea8ff;
+  background: rgba(110, 168, 255, 0.16);
+  box-shadow: inset 3px 0 0 #6ea8ff,
+    0 0 0 1px rgba(110, 168, 255, 0.16),
+    0 0 14px rgba(110, 168, 255, 0.24);
+}
+
+.row__key {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+.mapper__status {
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--vpg-item-color-active);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 8, 12, 0.8);
+}
+
+.modal__box {
+  width: min(90%, 26rem);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.5rem;
+  background: #141a24;
+}
+
+.modal__text {
+  margin: 0 0 0.6rem;
+  font-family: var(--vpg-font-body);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modal__detail {
+  margin: 0 0 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.modal__button {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.3rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.modal__button:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.mapper__layout { width: min(100%, 76rem); display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 1fr); gap: 2rem; align-items: start; }
+.controller-panel { min-width: 0; }
+.controller { position: relative; width: min(100%, 32rem); margin: auto; aspect-ratio: 1; }
+.controller__body { width: 100%; height: 100%; display: block; pointer-events: none; }
+.controller__target { position: absolute; transform: translate(-50%, -50%); border: 2px solid transparent; border-radius: 30%; background: transparent; padding: 0; cursor: pointer; }
+.controller__target--rear { background: #141a24; border-color: #ffffff30; display: flex; align-items: center; justify-content: center; gap: .25rem; color: inherit; }
+.controller__target:hover, .controller__target:focus-visible, .controller__target--active { border-color: #ffc83d; background: #ffc83d33; box-shadow: 0 0 16px #ffc83d66; outline: none; }
+.controller__target--listening, .controller__target--listening:hover, .controller__target--listening:focus-visible { border-color: #6ea8ff; background: #6ea8ff55; box-shadow: 0 0 18px #6ea8ff88; }
+.controller__target--rear img { width: 55%; height: 90%; object-fit: contain; }
+.controller__direction { color: #ffc83d; font-size: clamp(.8rem, 2vw, 1.5rem); text-shadow: 0 1px 3px #000; }
+.controller__rear-key { font-size: clamp(.6rem, 1vw, .9rem); }
+.controller-panel__caption, .controller-panel__save { text-align: center; color: #aab4c4; font-size: .75rem; }
+.selection { display: flex; align-items: center; gap: 1rem; padding: .75rem 1rem; border: 1px solid #6ea8ff44; border-radius: .5rem; background: #141a24; }
+.selection img { width: 3rem; height: 3rem; }
+.selection strong { color: #ffc83d; }
+.selection p { margin: .3rem 0 0; }
+.rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; width: 100%; }
+.rows li { min-width: 0; }
+.rows li:nth-last-child(-n+3) { grid-column: 1 / -1; }
+.row__icon { width: 2rem; height: 2rem; object-fit: contain; flex-shrink: 0; }
+.row__label { flex: 1; }
+.row__key { max-width: 45%; color: #cfdaea; text-align: right; overflow-wrap: anywhere; }
+.row:focus-visible { outline: 2px solid #ffc83d; outline-offset: 2px; }
+.row--action { justify-content: center; min-height: 2.3rem; }
+.mapper__hint { text-align: center; line-height: 1.8; }
+.mapper__status { min-height: 1.2rem; text-align: center; }
+.modal { z-index: 2; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 760px) {
+  .mapper__layout { grid-template-columns: 1fr; gap: 1rem; max-width: 36rem; }
+  .mapper { padding: 1rem; }
+  .row { font-size: .8rem; }
+  .controller__rear-key { font-size: .7rem; }
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.3rem;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom-width: 2px;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.75rem;
+  text-align: center;
+}
+</style>

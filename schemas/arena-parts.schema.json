@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vpg-engine.local/schemas/arena-parts.schema.json",
+  "title": "VPG — Arena part",
+  "description": "A named, reusable floor, barricade or arena bowl. Arenas and stages reference its id; only this definition names the model file.",
+  "type": "object",
+  "required": ["id", "displayName", "kind", "glb"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "displayName": { "type": "string", "pattern": "\\S" },
+    "kind": { "enum": ["floor", "barricade", "outer"] },
+    "glb": { "type": "string", "pattern": "^assets/environments/arenas/.*\\.glb$" }
+  }
+}

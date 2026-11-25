@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vpg-engine.local/schemas/arenas.schema.json",
+  "title": "VPG Engine — Arena",
+  "description": "Schema for one arena definition file in data/environments/arenas/*.json.",
+  "type": "object",
+  "required": ["id", "displayName"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "description": "Optional arena schema version. Current version is 1.",
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/$defs/arena_id"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hidden": {
+      "description": "When true, the arena is left out of the arena viewer and arena editor menus. Defaults to false.",
+      "type": "boolean"
+    },
+    "previewImage": {
+      "$ref": "#/$defs/asset_path"
+    },
+    "arenaGlb": {
+      "description": "Legacy single arena GLB field, still read by the loader. Prefer stage/floor/barricade/outer for new data.",
+      "$ref": "#/$defs/asset_path"
+    },
+    "arenaParts": {
+      "description": "Legacy free-form part list, still read by the loader. Prefer stage/floor/barricade/outer for new data.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/arena_part"
+      }
+    },
+    "stage": {
+      "description": "Stage id from data/environments/stages.json. Chooses the entrance set, and constrains which floor, barricade and outer fit.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "floor": {
+      "description": "Floor part id from data/environments/arena-parts/. Must be one the chosen stage lists.",
+      "$ref": "#/$defs/part_id"
+    },
+    "barricade": {
+      "description": "Barricade part id from data/environments/arena-parts/. Must be one the chosen stage lists.",
+      "$ref": "#/$defs/part_id"
+    },
+    "outer": {
+      "description": "Outer bowl part id from data/environments/arena-parts/, including its crowd. Must be one the chosen stage lists.",
+      "$ref": "#/$defs/part_id"
+    },
+    "arenaTextures": {
+      "description": "Textures for arena/environment materials. Keys are material names.",
+      "$ref": "#/$defs/material_textures"
+    },
+    "ringTextures": {
+      "description": "Textures and colors for the ring GLB. Keys are material names or supported color keys.",
+      "$ref": "#/$defs/ring_textures"
+    }
+  },
+  "allOf": [
+    {
+      "anyOf": [
+        { "required": ["stage"] },
+        { "required": ["arenaParts"] },
+        { "required": ["arenaGlb"] }
+      ]
+    }
+  ],
+  "$defs": {
+    "part_id": {
+      "description": "Stable id of a named arena part.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "arena_id": {
+      "description": "Arena identifier matching its file name without extension.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "asset_path": {
+      "description": "Project-relative asset path.",
+      "type": "string",
+      "minLength": 1
+    },
+    "css_color": {
+      "description": "CSS color accepted by the renderer: #RGB, #RRGGBB, rgb(...), or rgba(...).",
+      "type": "string",
+      "pattern": "^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})|rgba?\\(\\s*(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\s*,\\s*(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\s*,\\s*(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})(\\s*,\\s*(0|1|0?\\.\\d+))?\\s*\\))$"
+    },
+    "position": {
+      "description": "World-space offset for an arena part.",
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "rotation": {
+      "description": "World-space Euler rotation for an arena part, in radians, ordered [x, y, z].",
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "number"
+      }
+    },
+    "arena_part": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/asset_path"
+        },
+        {
+          "type": "object",
+          "required": ["glb"],
+          "additionalProperties": false,
+          "properties": {
+            "glb": {
+              "$ref": "#/$defs/asset_path"
+            },
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "rotation": {
+              "$ref": "#/$defs/rotation"
+            }
+          }
+        }
+      ]
+    },
+    "material_texture_value": {
+      "description": "A bundled texture path, or null to keep/clear based on renderer-specific behavior. Arenas saved in a local save may instead name one of that save's imported images as user-image:<sha256>; bundled arena files may not.",
+      "oneOf": [
+        { "$ref": "#/$defs/asset_path" },
+        { "type": "null" }
+      ]
+    },
+    "material_textures": {
+      "type": "object",
+      "properties": {
+        "mat_floor_ringside": { "$ref": "#/$defs/material_texture_value" },
+        "mat_ringside_barricade": { "$ref": "#/$defs/material_texture_value" },
+        "mat_ceiling_banners": { "$ref": "#/$defs/material_texture_value" },
+        "floorRingsideColor": { "$ref": "#/$defs/css_color" },
+        "barricadeColor": { "$ref": "#/$defs/css_color" }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/material_texture_value"
+      }
+    },
+    "ring_textures": {
+      "type": "object",
+      "properties": {
+        "mat_canvas": { "$ref": "#/$defs/material_texture_value" },
+        "mat_apron": { "$ref": "#/$defs/material_texture_value" },
+        "mat_rope_top": { "$ref": "#/$defs/material_texture_value" },
+        "mat_rope_middle": { "$ref": "#/$defs/material_texture_value" },
+        "mat_rope_bottom": { "$ref": "#/$defs/material_texture_value" },
+        "mat_turnbuckle": { "$ref": "#/$defs/material_texture_value" },
+        "mat_turnbuckle_cover": { "$ref": "#/$defs/material_texture_value" },
+        "mat_turnbuckle_bolt_cover": { "$ref": "#/$defs/material_texture_value" },
+        "mat_turnbuckle_bolt_1": { "$ref": "#/$defs/material_texture_value" },
+        "mat_turnbuckle_bolt_2": { "$ref": "#/$defs/material_texture_value" },
+        "mat_ring_steps": { "$ref": "#/$defs/material_texture_value" },
+        "canvasColor": { "$ref": "#/$defs/css_color" },
+        "apronColor": { "$ref": "#/$defs/css_color" },
+        "ringStepsColor": { "$ref": "#/$defs/css_color" },
+        "ropeColor": { "$ref": "#/$defs/css_color" },
+        "ropeTopColor": { "$ref": "#/$defs/css_color" },
+        "ropeMiddleColor": { "$ref": "#/$defs/css_color" },
+        "ropeBottomColor": { "$ref": "#/$defs/css_color" },
+        "postColor": { "$ref": "#/$defs/css_color" },
+        "turnbucklePadColor": { "$ref": "#/$defs/css_color" },
+        "turnbuckleBoltCoverColor": { "$ref": "#/$defs/css_color" }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/material_texture_value"
+      }
+    }
+  }
+}

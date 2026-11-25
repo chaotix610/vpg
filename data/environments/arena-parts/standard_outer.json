@@ -1,0 +1,7 @@
+{
+  "$schema": "../../../schemas/arena-parts.schema.json",
+  "id": "standard_outer",
+  "displayName": "Standard Arena Bowl",
+  "kind": "outer",
+  "glb": "assets/environments/arenas/shared/models/outer/arena_outer.glb"
+}

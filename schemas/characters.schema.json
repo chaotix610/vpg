@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vpg-engine.local/schemas/characters.schema.json",
+  "title": "VPG — Character",
+  "description": "A character name and its runtime GLB model.",
+  "type": "object",
+  "required": ["name", "glb"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string", "pattern": "\\S" },
+    "glb": { "type": "string", "pattern": "^assets/characters/models/.+\\.glb$" }
+  }
+}

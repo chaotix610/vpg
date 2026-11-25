@@ -1,0 +1,923 @@
+{
+  "version": 1,
+  "wrestlers": [
+    "default",
+    "the-rock",
+    "steve-austin",
+    "undertaker",
+    "kane",
+    "steven-richards",
+    "mankind",
+    "cactus-jack",
+    "mick-foley",
+    "shawn-michaels",
+    "triple-h",
+    "x-pac",
+    "mr-ass",
+    "road-dogg",
+    "chris-benoit",
+    "dean-malenko",
+    "perry-saturn",
+    "eddie-guerrero",
+    "chris-jericho",
+    "kurt-angle",
+    "tazz",
+    "test",
+    "godfather",
+    "d-lo-brown",
+    "val-venis",
+    "ken-shamrock",
+    "rikishi",
+    "grand-master-sexay",
+    "scotty-too-hotty",
+    "edge",
+    "christian",
+    "matt-hardy",
+    "jeff-hardy",
+    "faarooq",
+    "bradshaw",
+    "d-von-dudley",
+    "buh-buh-ray-dudley",
+    "hardcore-holly",
+    "crash",
+    "big-boss-man",
+    "albert",
+    "al-snow",
+    "steve-blackman",
+    "british-bulldog",
+    "mark-henry",
+    "viscera",
+    "andre-the-giant",
+    "bull-buchanan",
+    "essa-rios",
+    "taka-michinoku",
+    "chyna",
+    "stephanie-mcmahon",
+    "tori",
+    "terri",
+    "trish-stratus",
+    "lita",
+    "ivory",
+    "linda-mcmahon",
+    "the-kat",
+    "mae-young",
+    "ho",
+    "vince-mcmahon",
+    "shane-mcmahon",
+    "earl-hebner",
+    "jim-ross"
+  ],
+  "summaries": [
+    {
+      "id": "default",
+      "rosterIndex": null,
+      "fullName": "DEFAULT WRESTLER",
+      "shortName": "DEFAULT",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 140,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "the-rock",
+      "rosterIndex": 0,
+      "fullName": "THE ROCK",
+      "shortName": "ROCK",
+      "ringName": null,
+      "heightRaw": 17,
+      "weightRaw": 175,
+      "costumeCount": 4,
+      "bodyTypes": [
+        8
+      ]
+    },
+    {
+      "id": "steve-austin",
+      "rosterIndex": 4,
+      "fullName": "STEVE AUSTIN",
+      "shortName": "AUSTIN",
+      "ringName": "STONE COLD",
+      "heightRaw": 14,
+      "weightRaw": 152,
+      "costumeCount": 4,
+      "bodyTypes": [
+        10
+      ]
+    },
+    {
+      "id": "undertaker",
+      "rosterIndex": 8,
+      "fullName": "UNDERTAKER",
+      "shortName": "UNDERTAKER",
+      "ringName": null,
+      "heightRaw": 22,
+      "weightRaw": 228,
+      "costumeCount": 4,
+      "bodyTypes": [
+        5
+      ]
+    },
+    {
+      "id": "kane",
+      "rosterIndex": 12,
+      "fullName": "KANE",
+      "shortName": "KANE",
+      "ringName": null,
+      "heightRaw": 24,
+      "weightRaw": 226,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "steven-richards",
+      "rosterIndex": 16,
+      "fullName": "STEVEN RICHARDS",
+      "shortName": "RICHARDS",
+      "ringName": null,
+      "heightRaw": 15,
+      "weightRaw": 138,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "mankind",
+      "rosterIndex": 20,
+      "fullName": "MANKIND",
+      "shortName": "MANKIND",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 187,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6
+      ]
+    },
+    {
+      "id": "cactus-jack",
+      "rosterIndex": 24,
+      "fullName": "CACTUS JACK",
+      "shortName": "CACTUS",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 187,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6
+      ]
+    },
+    {
+      "id": "mick-foley",
+      "rosterIndex": 28,
+      "fullName": "MICK FOLEY",
+      "shortName": "MICK",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 187,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6
+      ]
+    },
+    {
+      "id": "shawn-michaels",
+      "rosterIndex": 32,
+      "fullName": "SHAWN MICHAELS",
+      "shortName": "HBK",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 127,
+      "costumeCount": 4,
+      "bodyTypes": [
+        11
+      ]
+    },
+    {
+      "id": "triple-h",
+      "rosterIndex": 36,
+      "fullName": "TRIPLE H",
+      "shortName": "HHH",
+      "ringName": null,
+      "heightRaw": 16,
+      "weightRaw": 146,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "x-pac",
+      "rosterIndex": 40,
+      "fullName": "X-PAC",
+      "shortName": "X-PAC",
+      "ringName": null,
+      "heightRaw": 12,
+      "weightRaw": 112,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "mr-ass",
+      "rosterIndex": 44,
+      "fullName": "MR. ASS",
+      "shortName": "MR. ASS",
+      "ringName": null,
+      "heightRaw": 16,
+      "weightRaw": 170,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "road-dogg",
+      "rosterIndex": 48,
+      "fullName": "ROAD DOGG",
+      "shortName": "ROAD DOGG",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 136,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "chris-benoit",
+      "rosterIndex": 52,
+      "fullName": "CHRIS BENOIT",
+      "shortName": "BENOIT",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 120,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "dean-malenko",
+      "rosterIndex": 56,
+      "fullName": "DEAN MALENKO",
+      "shortName": "MALENKO",
+      "ringName": null,
+      "heightRaw": 8,
+      "weightRaw": 112,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "perry-saturn",
+      "rosterIndex": 60,
+      "fullName": "PERRY SATURN",
+      "shortName": "SATURN",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 134,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "eddie-guerrero",
+      "rosterIndex": 64,
+      "fullName": "EDDIE GUERRERO",
+      "shortName": "GUERRERO",
+      "ringName": null,
+      "heightRaw": 8,
+      "weightRaw": 120,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "chris-jericho",
+      "rosterIndex": 68,
+      "fullName": "CHRIS JERICHO",
+      "shortName": "JERICHO",
+      "ringName": null,
+      "heightRaw": 11,
+      "weightRaw": 125,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "kurt-angle",
+      "rosterIndex": 72,
+      "fullName": "KURT ANGLE",
+      "shortName": "ANGLE",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 120,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "tazz",
+      "rosterIndex": 76,
+      "fullName": "TAZZ",
+      "shortName": "TAZZ",
+      "ringName": null,
+      "heightRaw": 9,
+      "weightRaw": 140,
+      "costumeCount": 4,
+      "bodyTypes": [
+        4
+      ]
+    },
+    {
+      "id": "test",
+      "rosterIndex": 80,
+      "fullName": "TEST",
+      "shortName": "TEST",
+      "ringName": null,
+      "heightRaw": 24,
+      "weightRaw": 187,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "godfather",
+      "rosterIndex": 84,
+      "fullName": "GODFATHER",
+      "shortName": "GODFATHER",
+      "ringName": null,
+      "heightRaw": 18,
+      "weightRaw": 220,
+      "costumeCount": 4,
+      "bodyTypes": [
+        5
+      ]
+    },
+    {
+      "id": "d-lo-brown",
+      "rosterIndex": 88,
+      "fullName": "D'LO BROWN",
+      "shortName": "D'LO",
+      "ringName": null,
+      "heightRaw": 15,
+      "weightRaw": 186,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "val-venis",
+      "rosterIndex": 92,
+      "fullName": "VAL VENIS",
+      "shortName": "VENIS",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 140,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "ken-shamrock",
+      "rosterIndex": 96,
+      "fullName": "KEN SHAMROCK",
+      "shortName": "SHAMROCK",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 135,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "rikishi",
+      "rosterIndex": 100,
+      "fullName": "RIKISHI",
+      "shortName": "RIKISHI",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 301,
+      "costumeCount": 4,
+      "bodyTypes": [
+        9
+      ]
+    },
+    {
+      "id": "grand-master-sexay",
+      "rosterIndex": 104,
+      "fullName": "GRAND MASTER SEXAY",
+      "shortName": "SEXAY",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 113,
+      "costumeCount": 4,
+      "bodyTypes": [
+        1
+      ]
+    },
+    {
+      "id": "scotty-too-hotty",
+      "rosterIndex": 108,
+      "fullName": "SCOTTY TOO HOTTY",
+      "shortName": "SCOTTY",
+      "ringName": null,
+      "heightRaw": 9,
+      "weightRaw": 109,
+      "costumeCount": 4,
+      "bodyTypes": [
+        1
+      ]
+    },
+    {
+      "id": "edge",
+      "rosterIndex": 112,
+      "fullName": "EDGE",
+      "shortName": "EDGE",
+      "ringName": null,
+      "heightRaw": 16,
+      "weightRaw": 140,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "christian",
+      "rosterIndex": 116,
+      "fullName": "CHRISTIAN",
+      "shortName": "CHRISTIAN",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 115,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "matt-hardy",
+      "rosterIndex": 120,
+      "fullName": "MATT HARDY",
+      "shortName": "MATT",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 127,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "jeff-hardy",
+      "rosterIndex": 124,
+      "fullName": "JEFF HARDY",
+      "shortName": "JEFF",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 122,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "faarooq",
+      "rosterIndex": 128,
+      "fullName": "FAAROOQ",
+      "shortName": "FAAROOQ",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 170,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "bradshaw",
+      "rosterIndex": 132,
+      "fullName": "BRADSHAW",
+      "shortName": "BRADSHAW",
+      "ringName": null,
+      "heightRaw": 18,
+      "weightRaw": 190,
+      "costumeCount": 4,
+      "bodyTypes": [
+        5
+      ]
+    },
+    {
+      "id": "d-von-dudley",
+      "rosterIndex": 136,
+      "fullName": "D-VON DUDLEY",
+      "shortName": "D-VON",
+      "ringName": null,
+      "heightRaw": 14,
+      "weightRaw": 140,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "buh-buh-ray-dudley",
+      "rosterIndex": 140,
+      "fullName": "BUH BUH RAY DUDLEY",
+      "shortName": "BUH BUH",
+      "ringName": null,
+      "heightRaw": 16,
+      "weightRaw": 175,
+      "costumeCount": 4,
+      "bodyTypes": [
+        5
+      ]
+    },
+    {
+      "id": "hardcore-holly",
+      "rosterIndex": 144,
+      "fullName": "HARDCORE HOLLY",
+      "shortName": "HARDCORE",
+      "ringName": null,
+      "heightRaw": 13,
+      "weightRaw": 142,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "crash",
+      "rosterIndex": 148,
+      "fullName": "CRASH",
+      "shortName": "CRASH",
+      "ringName": null,
+      "heightRaw": 39,
+      "weightRaw": 503,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "big-boss-man",
+      "rosterIndex": 152,
+      "fullName": "BIG BOSS MAN",
+      "shortName": "BOSS MAN",
+      "ringName": null,
+      "heightRaw": 18,
+      "weightRaw": 215,
+      "costumeCount": 4,
+      "bodyTypes": [
+        5
+      ]
+    },
+    {
+      "id": "albert",
+      "rosterIndex": 156,
+      "fullName": "ALBERT",
+      "shortName": "ALBERT",
+      "ringName": null,
+      "heightRaw": 18,
+      "weightRaw": 225,
+      "costumeCount": 4,
+      "bodyTypes": [
+        12
+      ]
+    },
+    {
+      "id": "al-snow",
+      "rosterIndex": 160,
+      "fullName": "AL SNOW",
+      "shortName": "AL",
+      "ringName": null,
+      "heightRaw": 12,
+      "weightRaw": 134,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3
+      ]
+    },
+    {
+      "id": "steve-blackman",
+      "rosterIndex": 164,
+      "fullName": "STEVE BLACKMAN",
+      "shortName": "BLACKMAN",
+      "ringName": "LEATHAL WEAPON",
+      "heightRaw": 14,
+      "weightRaw": 145,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "british-bulldog",
+      "rosterIndex": 168,
+      "fullName": "BRITISH BULLDOG",
+      "shortName": "BULLDOG",
+      "ringName": null,
+      "heightRaw": 15,
+      "weightRaw": 170,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "mark-henry",
+      "rosterIndex": 172,
+      "fullName": "MARK HENRY",
+      "shortName": "HENRY",
+      "ringName": "SEXUAL CHOCOLATE",
+      "heightRaw": 13,
+      "weightRaw": 300,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6
+      ]
+    },
+    {
+      "id": "viscera",
+      "rosterIndex": 176,
+      "fullName": "VISCERA",
+      "shortName": "VISCERA",
+      "ringName": null,
+      "heightRaw": 18,
+      "weightRaw": 454,
+      "costumeCount": 4,
+      "bodyTypes": [
+        7
+      ]
+    },
+    {
+      "id": "andre-the-giant",
+      "rosterIndex": 180,
+      "fullName": "ANDRE THE GIANT",
+      "shortName": "ANDRE",
+      "ringName": null,
+      "heightRaw": 35,
+      "weightRaw": 462,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6
+      ]
+    },
+    {
+      "id": "bull-buchanan",
+      "rosterIndex": 184,
+      "fullName": "BULL BUCHANAN",
+      "shortName": "BUCHANAN",
+      "ringName": null,
+      "heightRaw": 24,
+      "weightRaw": 197,
+      "costumeCount": 4,
+      "bodyTypes": [
+        2
+      ]
+    },
+    {
+      "id": "essa-rios",
+      "rosterIndex": 188,
+      "fullName": "ESSA RIOS",
+      "shortName": "RIOS",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 95,
+      "costumeCount": 4,
+      "bodyTypes": [
+        0
+      ]
+    },
+    {
+      "id": "taka-michinoku",
+      "rosterIndex": 192,
+      "fullName": "TAKA MICHINOKU",
+      "shortName": "TAKA",
+      "ringName": null,
+      "heightRaw": 10,
+      "weightRaw": 87,
+      "costumeCount": 4,
+      "bodyTypes": [
+        1
+      ]
+    },
+    {
+      "id": "chyna",
+      "rosterIndex": 196,
+      "fullName": "CHYNA",
+      "shortName": "CHYNA",
+      "ringName": null,
+      "heightRaw": 37,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        13
+      ]
+    },
+    {
+      "id": "stephanie-mcmahon",
+      "rosterIndex": 200,
+      "fullName": "STEPHANIE McMAHON",
+      "shortName": "STEPHANIE",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        15
+      ]
+    },
+    {
+      "id": "tori",
+      "rosterIndex": 204,
+      "fullName": "TORI",
+      "shortName": "TORI",
+      "ringName": null,
+      "heightRaw": 37,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        17
+      ]
+    },
+    {
+      "id": "terri",
+      "rosterIndex": 208,
+      "fullName": "TERRI",
+      "shortName": "TERRI",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        17,
+        15
+      ]
+    },
+    {
+      "id": "trish-stratus",
+      "rosterIndex": 212,
+      "fullName": "TRISH STRATUS",
+      "shortName": "TRISH",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        17
+      ]
+    },
+    {
+      "id": "lita",
+      "rosterIndex": 216,
+      "fullName": "LITA",
+      "shortName": "LITA",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        15
+      ]
+    },
+    {
+      "id": "ivory",
+      "rosterIndex": 220,
+      "fullName": "IVORY",
+      "shortName": "IVORY",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        20,
+        14
+      ]
+    },
+    {
+      "id": "linda-mcmahon",
+      "rosterIndex": 224,
+      "fullName": "LINDA McMAHON",
+      "shortName": "LINDA",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        16
+      ]
+    },
+    {
+      "id": "the-kat",
+      "rosterIndex": 228,
+      "fullName": "THE KAT",
+      "shortName": "KAT",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        15,
+        17
+      ]
+    },
+    {
+      "id": "mae-young",
+      "rosterIndex": 232,
+      "fullName": "MAE YOUNG",
+      "shortName": "MAE",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        21
+      ]
+    },
+    {
+      "id": "ho",
+      "rosterIndex": 236,
+      "fullName": "HO",
+      "shortName": "HO",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 500,
+      "costumeCount": 4,
+      "bodyTypes": [
+        17
+      ]
+    },
+    {
+      "id": "vince-mcmahon",
+      "rosterIndex": 240,
+      "fullName": "VINCE McMAHON",
+      "shortName": "VINCE",
+      "ringName": null,
+      "heightRaw": 37,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        1
+      ]
+    },
+    {
+      "id": "shane-mcmahon",
+      "rosterIndex": 244,
+      "fullName": "SHANE McMAHON",
+      "shortName": "SHANE",
+      "ringName": null,
+      "heightRaw": 37,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        1
+      ]
+    },
+    {
+      "id": "earl-hebner",
+      "rosterIndex": 248,
+      "fullName": "EARL HEBNER",
+      "shortName": "HEBNER",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        3,
+        7,
+        1
+      ]
+    },
+    {
+      "id": "jim-ross",
+      "rosterIndex": 252,
+      "fullName": "JIM ROSS",
+      "shortName": "JIM ROSS",
+      "ringName": null,
+      "heightRaw": 36,
+      "weightRaw": 501,
+      "costumeCount": 4,
+      "bodyTypes": [
+        6,
+        5
+      ]
+    }
+  ]
+}

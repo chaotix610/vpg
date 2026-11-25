@@ -1,0 +1,49 @@
+{
+  "$schema": "../../schemas/stages.schema.json",
+  "schema_version": 1,
+  "stages": [
+    {
+      "id": "raw_is_war",
+      "displayName": "RAW is WAR",
+      "glb": "assets/environments/arenas/shared/models/stage/raw_stage.glb",
+      "floors": [
+        "standard_floor"
+      ],
+      "barricades": [
+        "standard_barricade"
+      ],
+      "outers": [
+        "standard_outer"
+      ]
+    },
+    {
+      "id": "royal_rumble",
+      "displayName": "Royal Rumble",
+      "glb": "assets/environments/arenas/shared/models/stage/royal_rumble_stage.glb",
+      "floors": [
+        "royal_rumble_floor"
+      ],
+      "barricades": [
+        "royal_rumble_barricade"
+      ],
+      "outers": [
+        "royal_rumble_outer"
+      ]
+    },
+    {
+      "id": "monday_nitro",
+      "displayName": "Monday Nitro",
+      "glb": "assets/environments/arenas/shared/models/stage/monday_nitro_stage.glb",
+      "floors": [
+        "standard_floor"
+      ],
+      "barricades": [
+        "standard_barricade"
+      ],
+      "outers": [
+        "standard_outer",
+        "nitro_outer"
+      ]
+    }
+  ]
+}
