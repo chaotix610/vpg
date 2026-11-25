@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vpg-engine.local/schemas/move-slots.schema.json",
+  "title": "VPG — Move slots",
+  "description": "Version 2 move slots, including state eligibility and structured controller inputs. Slot id uniqueness and references from the move catalog require separate validation.",
+  "type": "object",
+  "required": ["schema_version", "description", "field_definitions", "slots"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "type": "integer", "const": 2 },
+    "description": { "$ref": "#/$defs/text" },
+    "field_definitions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/text" }
+    },
+    "slots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/slot" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "pattern": "\\S" },
+    "identifier": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [{ "$ref": "#/$defs/identifier" }, { "const": "n/a" }]
+      }
+    },
+    "button": {
+      "description": "Logical PadButton names from src/input/controls.ts.",
+      "enum": ["a", "b", "z", "l", "r", "start", "cUp", "cDown", "cLeft", "cRight"]
+    },
+    "directions": {
+      "description": "Null when unused; a list of cardinal directions, or ['any'] by itself.",
+      "anyOf": [
+        { "type": "null" },
+        { "const": ["any"] },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["up", "down", "left", "right"] }
+        }
+      ]
+    },
+    "input_pattern": {
+      "type": "object",
+      "required": ["dpad", "control_stick", "modifier", "requires_run", "release_run"],
+      "additionalProperties": false,
+      "properties": {
+        "buttons": {
+          "description": "Simultaneous button presses; may be empty for stick-only inputs.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/button" }
+        },
+        "mash_buttons": {
+          "description": "A nonempty pool of rapid-tap buttons, mutually exclusive with buttons.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/button" }
+        },
+        "button_alternatives": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/button" }
+          }
+        },
+        "dpad": { "$ref": "#/$defs/directions" },
+        "control_stick": { "$ref": "#/$defs/directions" },
+        "modifier": { "enum": ["tap", "hold", "rapid_tap", null] },
+        "requires_run": { "type": "boolean" },
+        "release_run": { "type": "boolean" }
+      },
+      "oneOf": [{ "required": ["buttons"] }, { "required": ["mash_buttons"] }],
+      "dependentRequired": { "button_alternatives": ["buttons"] },
+      "if": { "properties": { "release_run": { "const": true } } },
+      "then": { "properties": { "requires_run": { "const": true } } }
+    },
+    "slot": {
+      "type": "object",
+      "required": [
+        "slot_id", "slot_display_name", "position", "category", "category_id", "group",
+        "actor_state", "target_state", "range", "requires_special", "trigger", "input",
+        "input_pattern", "setup"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "slot_id": { "$ref": "#/$defs/identifier" },
+        "slot_display_name": { "$ref": "#/$defs/text" },
+        "position": { "$ref": "#/$defs/identifier" },
+        "category": { "$ref": "#/$defs/text" },
+        "category_id": { "$ref": "#/$defs/identifier" },
+        "group": { "$ref": "#/$defs/identifier" },
+        "actor_state": { "$ref": "#/$defs/states" },
+        "target_state": { "$ref": "#/$defs/states" },
+        "range": { "enum": ["close", "mid", "any", "n/a"] },
+        "requires_special": { "type": "boolean" },
+        "trigger": { "enum": ["manual", "automatic"] },
+        "input": { "type": ["string", "null"] },
+        "input_pattern": {
+          "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/input_pattern" }]
+        },
+        "setup": { "$ref": "#/$defs/text" }
+      },
+      "if": { "properties": { "trigger": { "const": "automatic" } } },
+      "then": { "properties": { "input_pattern": { "type": "null" } } },
+      "else": {
+        "properties": {
+          "input": { "$ref": "#/$defs/text" },
+          "input_pattern": { "$ref": "#/$defs/input_pattern" }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/moves.schema.json",
   "schema_version": 3,
   "description": "Move catalog for the VPG Engine. Each move is an attack, submission, taunt, or other action that can be assigned to slots in move-slots.json. 'slot_ids' lists the slots the move is actually eligible for and is what the engine resolves against; 'groups' records the slot groups it was drawn from, and is always a superset - a move may belong to a group but be excluded from some of its slots.",
   "field_definitions": {

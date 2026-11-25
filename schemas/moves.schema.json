@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vpg-engine.local/schemas/moves.schema.json",
+  "title": "VPG — Move catalog",
+  "description": "Version 3 move catalog. Its imported values use strings for booleans, null sentinels and comma-separated lists. Move ids may repeat for variants; slot/group references and animation existence require separate validation.",
+  "type": "object",
+  "required": ["schema_version", "description", "field_definitions", "moves"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "type": "integer", "const": 3 },
+    "description": { "$ref": "#/$defs/text" },
+    "field_definitions": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/text" }
+    },
+    "moves": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/move" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "pattern": "\\S" },
+    "identifier_list": {
+      "description": "One or more lowercase identifiers separated by commas, without spaces.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(,[a-z][a-z0-9_]*)*$"
+    },
+    "animation_id": {
+      "description": "GLB filename, or the literal string 'null' for an unassigned animation.",
+      "type": "string",
+      "pattern": "^(null|[A-Za-z0-9][A-Za-z0-9._-]*\\.glb)$"
+    },
+    "move": {
+      "type": "object",
+      "required": [
+        "move_id", "name", "position", "groups", "slot_ids", "power", "ko", "bleed",
+        "feature", "actor_animation_id", "target_animation_id", "slot_animation_overrides"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "move_id": {
+          "description": "Snake case identifier; numeric prefixes such as 450_splash are allowed.",
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]*$"
+        },
+        "name": { "$ref": "#/$defs/text" },
+        "position": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "groups": { "$ref": "#/$defs/identifier_list" },
+        "slot_ids": { "$ref": "#/$defs/identifier_list" },
+        "power": { "enum": ["S", "A", "B", "C", "D", "E", "F", "G", "null"] },
+        "ko": { "enum": ["true", "false"] },
+        "bleed": { "enum": ["true", "false"] },
+        "feature": { "enum": ["pin", "submit", "null"] },
+        "actor_animation_id": { "$ref": "#/$defs/animation_id" },
+        "target_animation_id": { "$ref": "#/$defs/animation_id" },
+        "slot_animation_overrides": {
+          "description": "Empty when unused; otherwise semicolon-separated slot_id:animation_id pairs.",
+          "type": "string",
+          "pattern": "^([a-z][a-z0-9_]*:(null|[A-Za-z0-9][A-Za-z0-9._-]*\\.glb)(;[a-z][a-z0-9_]*:(null|[A-Za-z0-9][A-Za-z0-9._-]*\\.glb))*)?$"
+        }
+      }
+    }
+  }
+}
