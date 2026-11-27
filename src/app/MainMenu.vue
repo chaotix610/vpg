@@ -13,7 +13,7 @@
     <CharacterEditor v-else-if="characterEditorOpen" @back="closeCharacterEditor" />
 
     <template v-else>
-      <MainMenuHeading :title="page.displayName" :src="heading" />
+      <MainMenuHeading v-if="showHeading" :title="page.displayName" :src="heading" />
 
       <MainMenuList
         :items="menuEntries"
@@ -115,6 +115,9 @@ const ROUTE_ANIMATION_VIEWER = "commissioner.animation_viewer";
 const ROUTE_ARENA_VIEWER = "commissioner.arena_viewer";
 const ROUTE_ARENA_EDITOR = "commissioner.arena_editor";
 const ROUTE_CHARACTER_EDITOR = "commissioner.character_editor";
+/** Sub-pages that omit the text <h1> heading and let the stacked menu stand alone. */
+const PAGES_WITHOUT_HEADING = new Set(["multiPlay", "singlePlay", "commissioner"]);
+
 /** The Commissioner page, which holds the viewer, sits under the root page. */
 const VIEWER_PAGE_STACK = [ROOT_PAGE, "commissioner"];
 const viewerRow = () =>
@@ -177,9 +180,17 @@ export default defineComponent({
       return this.stack.length + Number(this.screenOpen);
     },
 
+    pageKey(): string {
+      return this.stack[this.stack.length - 1];
+    },
+
     page(): MenuPage {
       // Every key on the stack was resolved before being pushed.
-      return pageByKey(this.stack[this.stack.length - 1])!;
+      return pageByKey(this.pageKey)!;
+    },
+
+    showHeading(): boolean {
+      return Boolean(this.heading) || !PAGES_WITHOUT_HEADING.has(this.pageKey);
     },
 
     menuEntries(): MainMenuEntry[] {

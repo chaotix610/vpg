@@ -94,6 +94,32 @@ test("rebinding captures arrow keys and restores selection after a conflict", as
   await expect(shoulder).toBeFocused();
 });
 
+test("control mapper keeps the controller fixed on the left while the bindings scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 560 });
+  await openMapper(page);
+
+  const body = page.locator(".mapper__body");
+  const controller = page.locator(".controller-panel");
+  const rows = page.locator(".rows");
+
+  const controllerBefore = await controller.boundingBox();
+  const rowsBefore = await rows.boundingBox();
+  expect(controllerBefore).toBeTruthy();
+  expect(rowsBefore).toBeTruthy();
+
+  const scrolled = await body.evaluate((el) => {
+    el.scrollTop = 220;
+    return el.scrollTop;
+  });
+  expect(scrolled).toBeGreaterThan(100);
+
+  const controllerAfter = await controller.boundingBox();
+  const rowsAfter = await rows.boundingBox();
+  expect(Math.abs(controllerAfter!.y - controllerBefore!.y)).toBeLessThanOrEqual(2);
+  expect(Math.abs(controllerAfter!.x - controllerBefore!.x)).toBeLessThanOrEqual(2);
+  expect(rowsBefore!.y - rowsAfter!.y).toBeGreaterThan(100);
+});
+
 test("submenu Back buttons return through the menu hierarchy", async ({ page }) => {
   await page.goto("./");
   const back = page.getByRole("button", { name: "Back", exact: true });
@@ -102,6 +128,7 @@ test("submenu Back buttons return through the menu hierarchy", async ({ page }) 
   for (const name of ["Multi Play", "Single Play", "Commissioner"]) {
     await page.getByRole("button", { name, exact: true }).click();
     await expect(back).toBeVisible();
+    await expect(page.locator("h1")).toHaveCount(0);
     // The click leaves the pointer over whatever the new page puts there; on a
     // busy machine its late mouseenter would move the cursor after ArrowDown.
     await page.mouse.move(0, 0);

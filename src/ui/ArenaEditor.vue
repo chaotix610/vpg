@@ -4,11 +4,46 @@
 -->
 <template>
   <div class="editor">
-    <!-- Pick what to work on. -->
-    <div v-if="!draft" class="start" :style="backgroundStyle">
-      <h1 class="start__title">Arena Editor</h1>
+    <!-- Pick what to work on (Configuration Menus design language). -->
+    <ConfigScreenShell
+      v-if="!draft"
+      aria-label="Arena Editor"
+      screen-class="start"
+    >
+      <ConfigPreviewBooth layout="framed-rail" :center-x="680">
+        <div class="stage-canvas preview-stage">
+          <div class="preview">
+            <img
+              v-if="startPreviewUrl"
+              class="preview__image"
+              :src="startPreviewUrl"
+              :alt="`${startSelected?.displayName} preview`"
+            />
+            <div v-else class="preview__empty">No preview</div>
+          </div>
+        </div>
 
-      <div class="start__layout">
+        <template v-if="startSelected" #hud-bottom>
+          <span class="booth-pill booth-pill--name">{{ startSelected.displayName }}</span>
+          <span class="booth-pill">{{ startSelected.id }}</span>
+          <span class="booth-pill booth-pill--dim">
+            {{ startSelected.custom ? "CUSTOM" : "BUNDLED · CLONES ON EDIT" }}
+          </span>
+        </template>
+      </ConfigPreviewBooth>
+
+      <ConfigBreadcrumbHeader
+        top="COMMISSIONER"
+        second="Arena Editor"
+        back-label="BACK"
+        @back="chooseStart(backIndex)"
+      />
+
+      <aside class="start-rail" aria-label="Arenas">
+        <p class="start__warning">
+          Bundled arenas are cloned before editing. Your arenas are saved in this browser.
+        </p>
+
         <ul class="rows">
           <li
             v-for="(arena, index) in arenas"
@@ -22,6 +57,7 @@
             <span v-if="arena.custom" class="row__tag">Custom</span>
             <button
               v-if="index === startCursor"
+              type="button"
               class="row__clone"
               @click.stop="startClone(arena.id)"
             >
@@ -34,32 +70,13 @@
             @click="chooseStart(backIndex)"
             @mouseenter="startCursor = backIndex"
           >
-            <span class="row__name">Back</span>
+            <span class="row__name">&larr; Back</span>
           </li>
         </ul>
+      </aside>
 
-        <div class="preview">
-          <img
-            v-if="startPreviewUrl"
-            class="preview__image"
-            :src="startPreviewUrl"
-            :alt="`${startSelected?.displayName} preview`"
-          />
-          <div v-else class="preview__empty">No preview</div>
-        </div>
-      </div>
-
-      <p class="menu__hint">
-        <img class="menu__hint-icon" :src="menuIcons.dPad" alt="D-Pad" /> move
-        &middot; <img class="menu__hint-icon" :src="menuIcons.a" alt="A button" /> edit
-        &middot; <img class="menu__hint-icon" :src="menuIcons.z" alt="Z button" /> clone
-        &middot; <img class="menu__hint-icon" :src="menuIcons.b" alt="B button" /> back
-      </p>
-
-      <p class="start__warning">
-        Bundled arenas are cloned before editing. Your arenas are saved in this browser.
-      </p>
-    </div>
+      <ConfigControllerBar :hints="startControllerHints" />
+    </ConfigScreenShell>
 
     <!-- Editing (Configuration Menus design language: docs/ui/configuration-menus.md). -->
     <ConfigScreenShell
@@ -338,7 +355,6 @@ import {
 import { slotSections } from "@/content/textureSlots";
 import { type PieceKind, availableStages } from "@/content/stages";
 import type { ArenaPieceData } from "@/content/arenaPieces";
-import { requireAsset, resolveAsset } from "@/content/assets";
 import { ArenaScene, CAMERA_INPUTS } from "@/render/arena/ArenaScene";
 import { clearDraft, deleteArena, imagesInUse, readDraft, saveArena, writeDraft } from "@/save/arenaStore";
 import { imageLibrary, importImageFile, libraryIds, loadImageLibrary, pruneImages } from "@/save/imageStore";
@@ -363,13 +379,12 @@ import {
   ConfigScreenShell,
 } from "@/ui/configuration-menus";
 
-/** The menu hint's controller icons, as the main menu shows them. */
-const MENU_ICONS = {
-  dPad: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Pad.svg"),
-  a: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-A.svg"),
-  b: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-B.svg"),
-  z: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Z.svg"),
-};
+const START_CONTROLLER_HINTS: readonly ControllerHintItem[] = [
+  { icons: ["dPad"], label: "MOVE" },
+  { icons: ["a"], label: "EDIT" },
+  { icons: ["z"], label: "CLONE" },
+  { icons: ["b"], label: "BACK" },
+];
 
 /**
  * Arena Editor, ported from VirtualProGrappler-V2.
@@ -496,7 +511,7 @@ export default defineComponent({
       /** True while a text field has the keyboard to itself. */
       fieldEditing: false,
       stopGamepadPolling: null as (() => void) | null,
-      menuIcons: MENU_ICONS,
+      startControllerHints: START_CONTROLLER_HINTS,
     };
   },
 
@@ -520,15 +535,6 @@ export default defineComponent({
 
     startPreviewUrl(): string | null {
       return this.startSelected?.previewUrl ?? null;
-    },
-
-    /** The crowd art behind the arena list, matching the viewer's. */
-    backgroundStyle(): Record<string, string> {
-      const url = resolveAsset("assets/ui/textures/artwork/crowd-1.png");
-      if (!url) return {};
-      return {
-        backgroundImage: `linear-gradient(rgba(11, 14, 20, 0.66), rgba(11, 14, 20, 0.66)), url(${url})`,
-      };
     },
 
     /** Ids that would collide with this draft's. */
@@ -1178,90 +1184,20 @@ fieldset.panel__body { border: 0; margin: 0; min-width: 0; }
   overflow: hidden;
 }
 
-/* --- start screen --------------------------------------------------------- */
+/* --- start screen (Configuration Menus design) ---------------------------- */
 
-.start {
-  position: absolute;
-  inset: 0;
-  background-color: #0b0e14;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  padding: 2rem 1rem;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.start__title {
-  margin: 0;
-  font-family: var(--vpg-font-display);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.start__layout {
+.preview-stage {
   display: grid;
-  grid-template-columns: minmax(220px, 26vw) minmax(280px, 30rem);
-  gap: clamp(24px, 5vw, 64px);
-  align-items: center;
+  place-items: center;
+  padding: 1.5rem 2.2rem 2.8rem;
+  box-sizing: border-box;
 }
 
-.rows {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 12px;
-  color: var(--vpg-item-color-idle);
-  font-family: var(--vpg-font-menu-item);
-  font-size: clamp(18px, 1.8vw, 24px);
-  font-weight: 700;
-  letter-spacing: -1px;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: var(--vpg-item-stroke);
-  cursor: pointer;
-  transition: -webkit-text-fill-color var(--vpg-state-transition),
-    -webkit-text-stroke-width var(--vpg-state-transition);
-}
-
-.row--back {
-  margin-top: 0.5rem;
-}
-
-.row--active {
-  -webkit-text-fill-color: var(--vpg-item-color-active);
-  -webkit-text-stroke-width: 1.5px;
-  animation: glowPulse 1s ease-in-out infinite;
-}
-
-.row__name {
-  flex: 1;
-}
-
-.row__tag {
-  padding: 1px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 3px;
-  font-family: var(--vpg-font-body);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  -webkit-text-fill-color: #f2f5f8;
-  -webkit-text-stroke-width: 0;
-  opacity: 0.7;
+.preview {
+  width: min(100%, 34rem);
+  border: 4px solid var(--vpg-cfg-frame-border);
+  background: rgba(12, 8, 30, 0.9);
+  box-shadow: 0 0 28px rgba(176, 118, 255, 0.35), 0 12px 28px rgba(4, 2, 14, 0.65);
 }
 
 .preview__image {
@@ -1269,7 +1205,6 @@ fieldset.panel__body { border: 0; margin: 0; min-width: 0; }
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
-  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .preview__empty {
@@ -1277,33 +1212,121 @@ fieldset.panel__body { border: 0; margin: 0; min-width: 0; }
   aspect-ratio: 16 / 9;
   display: grid;
   place-items: center;
-  border: 1px dashed rgba(255, 255, 255, 0.25);
-  opacity: 0.5;
-  font-size: 0.85rem;
+  color: #b4a2d6;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.menu__hint {
-  margin: 0;
-  font-size: 0.8rem;
-  opacity: 0.6;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-}
-
-.menu__hint-icon {
-  display: inline-block;
-  width: 1.3rem;
-  height: 1.3rem;
-  margin: 0 0.12rem;
-  object-fit: contain;
-  vertical-align: middle;
+.start-rail {
+  position: absolute;
+  top: 19.2%;
+  bottom: 6.2%;
+  left: 3.4%;
+  width: clamp(19rem, 34vw, 28rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  min-height: 0;
+  z-index: 8;
+  font-family: var(--vpg-font-pixel);
 }
 
 .start__warning {
+  margin: 0 0.55rem 0 0.15rem;
+  padding: 0.26rem 0.62rem;
+  background: var(--vpg-cfg-panel-bg);
+  border-left: 3px solid var(--vpg-cfg-accent-amber);
+  color: var(--vpg-cfg-accent-amber);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
   margin: 0;
-  max-width: 60ch;
-  font-size: 14px;
-  text-align: center;
-  color: #f6b26b;
+  padding: 0.12rem 0.55rem 0.25rem 0.15rem;
+  list-style: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-color: var(--vpg-cfg-frame-border) rgba(15, 22, 46, 0.55);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+  padding: 0.22rem 0.78rem;
+  background: var(--vpg-cfg-bar-idle);
+  color: var(--vpg-cfg-text);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(7, 14, 34, 0.85);
+  -webkit-font-smoothing: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 90ms ease, background 90ms ease, color 90ms ease;
+}
+
+.row:hover {
+  filter: brightness(1.08);
+}
+
+.row--back {
+  margin-top: 0.28rem;
+  justify-content: center;
+}
+
+.row--back .row__name {
+  flex: 0 1 auto;
+}
+
+.row--active {
+  background: var(--vpg-cfg-bar-active);
+  color: var(--vpg-cfg-text-active);
+  text-shadow: none;
+  transform: scaleX(1.035);
+  box-shadow: 0 0 16px rgba(204, 168, 255, 0.55);
+  z-index: 4;
+}
+
+.row__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__tag {
+  padding: 0.1rem 0.42rem;
+  border: 1px solid rgba(182, 255, 116, 0.65);
+  background: rgba(12, 18, 40, 0.72);
+  color: var(--vpg-cfg-accent-lime);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: none;
+  flex-shrink: 0;
+}
+
+.row--active .row__tag {
+  border-color: var(--vpg-cfg-text-active);
+  background: rgba(14, 7, 26, 0.14);
+  color: var(--vpg-cfg-text-active);
 }
 
 /* --- editing (Configuration Menus design) -------------------------------- */
@@ -1537,18 +1560,26 @@ fieldset.panel__body { border: 0; margin: 0; min-width: 0; }
 }
 
 .row__clone {
-  padding: 3px 9px;
-  font-family: var(--vpg-font-body);
-  font-size: 12px;
+  padding: 0.16rem 0.52rem;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.72rem;
   font-weight: 400;
-  letter-spacing: 0;
-  color: #f2f5f8;
-  -webkit-text-fill-color: #f2f5f8;
-  -webkit-text-stroke-width: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 3px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vpg-cfg-text);
+  background: rgba(18, 42, 92, 0.92);
+  border: 1px solid rgba(14, 7, 26, 0.55);
+  border-radius: 0;
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.row__clone:hover,
+.row__clone:focus-visible {
+  outline: none;
+  background: #0e071a;
+  color: var(--vpg-cfg-accent-lime);
+  border-color: var(--vpg-cfg-accent-lime);
 }
 
 .slot {
@@ -1633,17 +1664,18 @@ fieldset.panel__body { border: 0; margin: 0; min-width: 0; }
   height: 0.95rem;
 }
 
-@media (max-width: 720px) {
-  .start__layout {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 760px) {
+  .start-rail,
   .panel {
-    top: 48%;
-    bottom: 2.6rem;
+    top: 46%;
+    bottom: 2.8rem;
     left: 1rem;
     right: 1rem;
     width: auto;
+  }
+
+  .preview-stage {
+    padding: 0.75rem 1rem 2.4rem;
   }
 }
 

@@ -1,16 +1,47 @@
 <!--
-  Menu screen for the animation viewer. The Babylon side is plain TypeScript
-  (src/render/viewer/); this component is its menu, drawn and driven like the
-  rest of the app's menus: a cursor over rows, moved by the d-pad or stick and
-  worked by the same virtual controller, so rebinding in Commissioner →
-  Controls applies here too. MainMenu loads it on demand, so Babylon stays out
-  of the menu's chunk.
+  Animation Viewer styled with the reusable Configuration Menus design system
+  (`docs/ui/configuration-menus.md`). The Babylon side stays in plain TypeScript
+  (`src/render/viewer/`); MainMenu loads this component lazily so Babylon stays
+  out of the Main Menu bundle.
 -->
 <template>
-  <main class="viewer" :class="{ 'viewer--panel-hidden': panelHidden }">
-    <aside class="panel" :style="panelStyle" aria-label="Animation viewer menu" :aria-hidden="panelHidden">
-      <h1 class="panel__title">Animation Viewer</h1>
+  <ConfigScreenShell
+    aria-label="Animation Viewer"
+    :screen-class="panelHidden ? 'viewer viewer--panel-hidden' : 'viewer'"
+  >
+    <ConfigPreviewBooth
+      :layout="panelHidden ? 'fullscreen' : 'framed-rail'"
+      :center-x="panelHidden ? 500 : 660"
+    >
+      <canvas ref="canvas" class="stage-canvas" />
 
+      <template v-if="vs.clipName" #hud-top-left>
+        <span class="booth-pill">{{ vs.clipName }}</span>
+      </template>
+
+      <template #hud-bottom>
+        <span v-if="vs.character" class="booth-pill booth-pill--name">
+          {{ characterLabel(vs.character) }}
+        </span>
+        <span class="booth-pill">{{ vs.hasClip ? (vs.playing ? "PLAYING" : "PAUSED") : "NO CLIP" }}</span>
+        <span class="booth-pill booth-pill--dim">{{ timeText }}</span>
+      </template>
+    </ConfigPreviewBooth>
+
+    <ConfigBreadcrumbHeader
+      v-if="!panelHidden"
+      top="COMMISSIONER"
+      second="Animation Viewer"
+      back-label="BACK"
+      @back="back"
+    />
+
+    <aside
+      v-show="!panelHidden"
+      class="panel"
+      aria-label="Animation viewer menu"
+      :aria-hidden="panelHidden"
+    >
       <ul class="rows" role="menu" aria-label="Viewer options">
         <li
           v-for="(row, index) in rows"
@@ -94,33 +125,16 @@
         <p class="timeline__time">{{ timeText }}</p>
       </section>
 
-      <p class="status" :class="{ 'status--error': vs.error }" role="status">{{ vs.status }}</p>
-
-      <p class="hint">
-        <span><img :src="icons.dPad" alt="D-Pad" /> move &middot; &#9664;&#9654; change</span>
-        <span><img :src="icons.a" alt="A button" /> select</span>
-        <span><img :src="icons.start" alt="Start" /> play</span>
-        <span><img :src="icons.l" alt="L" /><img :src="icons.r" alt="R" /> clip</span>
-        <span><img :src="icons.c" alt="C buttons" /> camera</span>
-        <span><img :src="icons.z" alt="Z button" /> hide</span>
-        <span><img :src="icons.b" alt="B button" /> back</span>
-      </p>
+      <p class="status" :class="{ 'status--error': vs.error }" :title="vs.status" role="status">{{ vs.status }}</p>
     </aside>
-
-    <div class="viewport">
-      <canvas ref="canvas"></canvas>
-      <p v-if="panelHidden" class="viewport__hint">
-        <img :src="icons.z" alt="Z button" /> menu
-        &middot; <img :src="icons.start" alt="Start" /> play
-        &middot; <img :src="icons.l" alt="L" /><img :src="icons.r" alt="R" /> clip
-      </p>
-    </div>
 
     <!-- List picker for characters, folders and clips, opened with A. -->
     <div v-if="picker" class="modal" @click="closePicker">
       <div class="modal__box" role="dialog" aria-modal="true" :aria-label="pickerTitle" @click.stop @wheel.prevent="wheelPicker">
-        <h2 class="modal__title">{{ pickerTitle }}</h2>
-        <p class="modal__count">{{ pickerItems.length ? `${picker.cursor + 1} / ${pickerItems.length}` : "Nothing to choose" }}</p>
+        <header class="modal__head">
+          <h2 class="modal__title">{{ pickerTitle }}</h2>
+          <p class="modal__count">{{ pickerItems.length ? `${picker.cursor + 1} / ${pickerItems.length}` : "NOTHING TO CHOOSE" }}</p>
+        </header>
         <ul class="picker" role="listbox" :aria-label="pickerTitle">
           <li
             v-for="(item, k) in pickerWindow"
@@ -139,20 +153,21 @@
           </li>
         </ul>
         <p class="modal__close">
-          <img :src="icons.dPad" alt="D-Pad" /> move
-          &middot; <img :src="icons.dPad" alt="" /> &#9664;&#9654; page
-          &middot; <img :src="icons.a" alt="A button" /> choose
-          &middot; <img :src="icons.b" alt="B button" /> close
+          <img :src="icons.dPad.src" :alt="icons.dPad.alt" /> MOVE
+          &middot; <img :src="icons.dPad.src" alt="" /> &#9664;&#9654; PAGE
+          &middot; <img :src="icons.a.src" :alt="icons.a.alt" /> CHOOSE
+          &middot; <img :src="icons.b.src" :alt="icons.b.alt" /> CLOSE
         </p>
       </div>
     </div>
-  </main>
+
+    <ConfigControllerBar :hints="controllerHints" />
+  </ConfigScreenShell>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { baseName, dirName } from "@/content/animationLibrary";
-import { requireAsset } from "@/content/assets";
 import { playMenuCue } from "@/audio/menuAudio";
 import { startAnimationViewer, type AnimationViewerHandle, type ViewerCatalog, type ViewerState } from "@/render/viewer";
 import {
@@ -163,22 +178,17 @@ import {
   virtualInputForBinding,
   type VirtualInput,
 } from "@/input/VirtualController";
+import { loadControllerIcons, type ControllerHintItem } from "@/ui/controllerIcons";
+import {
+  ConfigBreadcrumbHeader,
+  ConfigControllerBar,
+  ConfigPreviewBooth,
+  ConfigScreenShell,
+} from "@/ui/configuration-menus";
 
 const emit = defineEmits<{ back: [] }>();
 
-const icons = {
-  dPad: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Pad.svg"),
-  a: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-A.svg"),
-  b: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-B.svg"),
-  z: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Z.svg"),
-  start: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-Start.svg"),
-  l: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-L.svg"),
-  r: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-R.svg"),
-  c: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-C.svg"),
-};
-const panelStyle = {
-  backgroundImage: `linear-gradient(rgba(11, 14, 20, 0.8), rgba(11, 14, 20, 0.92)), url(${requireAsset("assets/ui/textures/artwork/crowd-1.png")})`,
-};
+const icons = loadControllerIcons();
 
 const ALL = "*";
 const SPEEDS = [0.1, 0.25, 0.5, 1, 1.5, 2];
@@ -295,6 +305,27 @@ const timeText = computed(() => {
   const frame = Math.round(((vs.frame - vs.from) * 30) / vs.fps);
   const frames = Math.round(((vs.to - vs.from) * 30) / vs.fps);
   return `${elapsed} / ${total} s · frame ${frame} / ${frames}`;
+});
+
+const controllerHints = computed<ControllerHintItem[]>(() => {
+  if (panelHidden.value) {
+    return [
+      { icons: ["z"], label: "SHOW MENU" },
+      { icons: ["start"], label: vs.playing ? "PAUSE" : "PLAY" },
+      { icons: ["l", "r"], label: "CLIP" },
+      { icons: ["c"], label: "CAMERA" },
+      { icons: ["b"], label: "BACK" },
+    ];
+  }
+  return [
+    { icons: ["dPad"], label: "MOVE · ◀▶ CHANGE" },
+    { icons: ["a"], label: "SELECT" },
+    { icons: ["start"], label: vs.playing ? "PAUSE" : "PLAY" },
+    { icons: ["l", "r"], label: "CLIP" },
+    { icons: ["c"], label: "CAMERA" },
+    { icons: ["z"], label: "HIDE MENU" },
+    { icons: ["b"], label: "BACK" },
+  ];
 });
 
 // ------------------------------------------------------------ picker
@@ -695,105 +726,109 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.viewer {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: minmax(19rem, 23rem) 1fr;
-  background: #15171c;
-  color: #f2f5f8;
-  font-family: var(--vpg-font-body);
+/* ----------------------------------------------------------- Booth HUD pills */
+
+.booth-pill {
+  padding: 0.14rem 0.44rem;
+  background: rgba(12, 8, 30, 0.82);
+  border: 1px solid rgba(208, 172, 255, 0.45);
+  color: #e6d4ff;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.viewer--panel-hidden {
-  grid-template-columns: 0 1fr;
+.booth-pill--name {
+  border-color: rgba(182, 255, 116, 0.55);
+  color: #c2ff7e;
 }
 
-.viewer--panel-hidden .panel {
-  visibility: hidden;
+.booth-pill--dim {
+  color: #b4a2d6;
+  border-color: rgba(208, 172, 255, 0.25);
 }
 
-/* ----------------------------------------------------------- panel */
+/* ----------------------------------------------------------- Overlapping left rail */
 
 .panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  min-width: 0;
-  padding: 1.25rem 1rem 1rem;
-  overflow-y: auto;
-  border-right: var(--vpg-frame-width) solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 22px rgba(173, 216, 230, 0.18);
-  background-size: cover;
-  background-position: center;
-  z-index: 1;
-}
-
-.panel__title {
-  margin: 0;
-  font-family: var(--vpg-font-display);
-  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-/* Rows share the menu's type and cursor (see ControlMapper's rows). */
-.rows {
+  position: absolute;
+  top: 19.2%;
+  bottom: 6.2%;
+  left: 3.4%;
+  width: clamp(19rem, 34.5vw, 28.5rem);
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.15rem 0.55rem 0.15rem 0.15rem;
+  scrollbar-color: var(--vpg-cfg-frame-border) rgba(15, 22, 46, 0.55);
+  z-index: 8;
+  font-family: var(--vpg-font-pixel);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .row {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 0.75rem;
-  min-height: 2.5rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid #ffffff18;
-  border-left: 3px solid transparent;
-  border-radius: 0.3rem;
-  background: rgba(20, 26, 36, 0.85);
-  color: var(--vpg-item-color-idle);
-  font-family: var(--vpg-font-menu-item);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  column-gap: 0.65rem;
+  min-height: 2.05rem;
+  padding: 0.2rem 0.72rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--vpg-cfg-bar-idle);
+  color: var(--vpg-cfg-text);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.86rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: var(--vpg-item-stroke);
+  text-shadow: 1px 1px 0 rgba(7, 14, 34, 0.85);
+  -webkit-font-smoothing: none;
   cursor: pointer;
   user-select: none;
-  transition: -webkit-text-fill-color var(--vpg-state-transition),
-    -webkit-text-stroke-width var(--vpg-state-transition);
+  transition: transform 90ms ease, background 90ms ease, color 90ms ease;
+}
+
+.row:hover {
+  filter: brightness(1.08);
 }
 
 .row--active {
-  border-left-color: var(--vpg-item-color-active);
-  background: rgba(242, 143, 61, 0.14);
-  -webkit-text-fill-color: var(--vpg-item-color-active);
-  -webkit-text-stroke-width: 1px;
-  animation: glowPulse 1s ease-in-out infinite;
+  background: var(--vpg-cfg-bar-active);
+  color: var(--vpg-cfg-text-active);
+  text-shadow: none;
+  transform: scaleX(1.03);
+  box-shadow: 0 0 16px rgba(204, 168, 255, 0.55);
+  z-index: 4;
 }
 
-/* Typing beats active: the row is taking text, not merely selected. */
+/* Typing beats active: electric cyan edit highlight matching Configuration Menus. */
 .row--typing {
-  border-left-color: #6ea8ff;
-  background: rgba(110, 168, 255, 0.16);
-  -webkit-text-fill-color: #cfe0ff;
-  animation: none;
+  background: var(--vpg-cfg-bar-typing);
+  color: #071324;
+  text-shadow: none;
+  transform: scaleX(1.03);
+  box-shadow: 0 0 18px rgba(124, 200, 255, 0.65);
+  z-index: 5;
 }
 
 .row--action {
   grid-template-columns: 1fr;
   justify-items: center;
-  margin-top: 0.25rem;
+  margin-top: 0.12rem;
 }
 
 .row__label {
@@ -802,7 +837,7 @@ onBeforeUnmount(() => {
 
 .row__back {
   width: 100%;
-  padding: 0.2rem;
+  padding: 0.18rem;
   border: 0;
   background: transparent;
   color: inherit;
@@ -812,8 +847,7 @@ onBeforeUnmount(() => {
 }
 
 .row__back:focus-visible {
-  outline: 2px solid var(--vpg-item-color-active);
-  outline-offset: 2px;
+  outline: none;
 }
 
 .row__value {
@@ -829,29 +863,34 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #cfdaea;
+  color: #d6e4ff;
+}
+
+.row--active .row__text,
+.row--typing .row__text {
+  color: inherit;
 }
 
 .row__detail {
   grid-column: 2;
   justify-self: end;
-  margin-right: 1.4rem;
-  font-size: 0.68rem;
-  opacity: 0.7;
+  margin-right: 1.3rem;
+  font-size: 0.72rem;
+  opacity: 0.78;
   font-variant-numeric: tabular-nums;
 }
 
 .row__arrow {
   flex: none;
-  padding: 0 0.15rem;
+  padding: 0 0.2rem;
   border: 0;
   background: none;
   color: inherit;
   font: inherit;
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.55;
+  opacity: 0.78;
 }
 
 .row--active .row__arrow,
@@ -862,40 +901,39 @@ onBeforeUnmount(() => {
 .row__search {
   width: 100%;
   min-width: 0;
-  padding: 0.2rem 0.4rem;
-  border: 1px solid #ffffff30;
-  border-radius: 0.2rem;
-  background: rgba(0, 0, 0, 0.35);
-  color: #f2f5f8;
-  -webkit-text-fill-color: #f2f5f8;
-  -webkit-text-stroke-width: 0;
-  font-family: var(--vpg-font-body);
-  font-size: 0.8rem;
-  font-weight: 400;
-  letter-spacing: 0.02em;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(204, 168, 255, 0.45);
+  border-radius: 0;
+  background: rgba(8, 12, 30, 0.86);
+  color: var(--vpg-cfg-text);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
   text-transform: none;
   outline: none;
 }
 
 .row__search::placeholder {
-  color: #8d97a8;
-  -webkit-text-fill-color: #8d97a8;
+  color: #93a6cb;
 }
 
+.row--active .row__search,
 .row--typing .row__search {
-  border-color: #6ea8ff;
+  background: #ffffff;
+  color: var(--vpg-cfg-text-active);
+  border-color: var(--vpg-cfg-text-active);
 }
 
-/* ----------------------------------------------------------- timeline */
+/* ----------------------------------------------------------- Timeline & Status */
 
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.6rem 0.7rem;
-  border: 1px solid #ffffff18;
-  border-radius: 0.3rem;
-  background: rgba(20, 26, 36, 0.85);
+  gap: 0.22rem;
+  padding: 0.38rem 0.65rem;
+  background: var(--vpg-cfg-panel-bg);
+  border: 1px solid rgba(204, 168, 255, 0.45);
+  border-left: 3px solid var(--vpg-cfg-accent-lime);
 }
 
 .timeline__name {
@@ -903,145 +941,97 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--vpg-item-color-active);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+  color: var(--vpg-cfg-accent-lime);
+  font-size: 0.84rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .timeline__scrub {
   width: 100%;
-  accent-color: var(--vpg-item-color-active);
+  accent-color: var(--vpg-cfg-frame-border);
 }
 
 .timeline__time {
   margin: 0;
-  color: #aab4c4;
-  font-size: 0.75rem;
+  color: #c8d8f8;
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
 }
 
 .status {
-  min-height: 2.6em;
   margin: 0;
-  color: #aab4c4;
-  font-family: system-ui, sans-serif;
+  padding: 0.24rem 0.6rem;
+  background: rgba(12, 18, 40, 0.88);
+  border-left: 3px solid rgba(204, 168, 255, 0.55);
+  color: #c2d4f6;
   font-size: 0.72rem;
-  word-break: break-word;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status--error {
-  color: #ff6b6b;
+  border-left-color: var(--vpg-cfg-accent-danger);
+  color: #ffb4be;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* ----------------------------------------------------------- hints */
-
-.hint,
-.viewport__hint,
-.modal__close {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.15rem 0.6rem;
-  margin: auto 0 0;
-  font-size: 0.75rem;
-  opacity: 0.75;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-}
-
-.hint span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-  white-space: nowrap;
-}
-
-.hint img,
-.viewport__hint img,
-.modal__close img {
-  width: 1.2rem;
-  height: 1.2rem;
-  object-fit: contain;
-  vertical-align: middle;
-}
-
-/* ----------------------------------------------------------- viewport */
-
-.viewport {
-  position: relative;
-  min-width: 0;
-  min-height: 0;
-}
-
-.viewport canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-  outline: none;
-}
-
-.viewport__hint {
-  position: absolute;
-  left: 1rem;
-  bottom: 1rem;
-  gap: 0.3rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 0.3rem;
-  background: rgba(11, 14, 20, 0.7);
-}
-
-/* ----------------------------------------------------------- picker */
+/* ----------------------------------------------------------- Picker Modal */
 
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(6, 8, 12, 0.78);
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background: rgba(6, 4, 18, 0.78);
 }
 
 .modal__box {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  width: min(92%, 34rem);
-  max-height: 90vh;
-  padding: 1.25rem 1.25rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 0.5rem;
-  background: #141a24;
+  gap: 0.65rem;
+  width: min(92vw, 36rem);
+  max-height: 88vh;
+  padding: 1rem 1.15rem;
+  background: var(--vpg-cfg-modal-bg);
+  border: 4px solid var(--vpg-cfg-frame-border);
+  box-shadow: 0 0 32px rgba(176, 118, 255, 0.45);
+}
+
+.modal__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--vpg-cfg-accent-lime);
 }
 
 .modal__title {
   margin: 0;
-  color: var(--vpg-item-color-active);
   font-family: var(--vpg-font-display);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 400;
   letter-spacing: 0.1em;
-  text-align: center;
   text-transform: uppercase;
 }
 
 .modal__count {
   margin: 0;
-  color: #aab4c4;
-  font-size: 0.75rem;
-  text-align: center;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
-}
-
-.modal__close {
-  margin-top: 0.3rem;
 }
 
 .picker {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1049,59 +1039,65 @@ onBeforeUnmount(() => {
 
 .picker__item {
   overflow: hidden;
-  padding: 0.3rem 0.7rem;
-  border-left: 3px solid transparent;
-  border-radius: 0.2rem;
-  color: var(--vpg-item-color-idle);
-  font-family: var(--vpg-font-menu-item);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  padding: 0.36rem 0.72rem;
+  border: 1px solid rgba(154, 184, 240, 0.28);
+  background: rgba(33, 66, 130, 0.85);
+  color: var(--vpg-cfg-text);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: var(--vpg-item-stroke);
+  -webkit-font-smoothing: none;
   cursor: pointer;
 }
 
-/* The playing choice is marked even when the cursor is elsewhere. */
+.picker__item--current {
+  border-color: var(--vpg-cfg-accent-lime);
+}
+
 .picker__item--current::before {
   content: "● ";
-  color: #6ea8ff;
-  -webkit-text-fill-color: #6ea8ff;
+  color: var(--vpg-cfg-accent-lime);
 }
 
 .picker__item--active {
-  border-left-color: var(--vpg-item-color-active);
-  background: rgba(242, 143, 61, 0.14);
-  -webkit-text-fill-color: var(--vpg-item-color-active);
-  -webkit-text-stroke-width: 1px;
-  animation: glowPulse 1s ease-in-out infinite;
+  background: var(--vpg-cfg-frame-border);
+  color: var(--vpg-cfg-text-active);
+  border-color: #ffffff;
 }
 
-/* ----------------------------------------------------------- small screens */
+.picker__item--active.picker__item--current::before {
+  color: var(--vpg-cfg-text-active);
+}
 
-@media (max-width: 720px) {
-  /* The page itself doesn't scroll (the menus fill the window), so the viewer does. */
-  .viewer {
-    grid-template-columns: 1fr;
-    grid-template-rows: 50vh auto;
-    overflow-y: auto;
-  }
+.modal__close {
+  margin: 0.15rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.82rem;
+  color: #c2d4f6;
+}
 
-  .viewer--panel-hidden {
-    grid-template-rows: 100% 0;
-  }
+.modal__close img {
+  width: 1.05rem;
+  height: 1.05rem;
+  object-fit: contain;
+}
 
-  .viewport {
-    order: -1;
-  }
-
+@media (max-width: 760px) {
   .panel {
-    overflow: visible;
-    border-right: 0;
-    border-top: var(--vpg-frame-width) solid rgba(255, 255, 255, 0.35);
+    top: 48%;
+    bottom: 2.6rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
   }
 }
 </style>

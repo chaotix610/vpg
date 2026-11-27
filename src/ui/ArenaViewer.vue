@@ -1,18 +1,50 @@
 <!--
-  Arena Viewer, ported from VirtualProGrappler-V2. A menu of every arena
-  (bundled and saved in this browser) with its preview art; choosing one opens
-  it in an orbiting Babylon scene. MainMenu loads it on demand, so Babylon
-  stays out of the menu's chunk.
+  Arena Viewer styled with the reusable Configuration Menus design system
+  (`docs/ui/configuration-menus.md`). Shows every arena (bundled and saved in
+  this browser) with its preview art in the purple wireframe booth; choosing
+  one opens it in a full-viewport orbiting Babylon scene. MainMenu loads this
+  component on demand so Babylon stays out of the menu's chunk.
 -->
 <template>
-  <div class="viewer">
+  <ConfigScreenShell
+    aria-label="Arena Viewer"
+    :screen-class="sceneOpen ? 'viewer viewer--scene' : 'viewer'"
+    :toast-message="status"
+    :toast-error="Boolean(status)"
+  >
     <canvas ref="canvas" class="viewer__canvas" :data-active="sceneOpen" />
 
     <!-- Selection UI, hidden once an arena is on screen. -->
-    <div v-if="!sceneOpen" class="select" :style="backgroundStyle">
-      <h1 class="select__title">Arena Viewer</h1>
+    <template v-if="!sceneOpen">
+      <ConfigPreviewBooth layout="framed-rail" :center-x="680">
+        <div class="stage-canvas preview-stage">
+          <div class="preview">
+            <img
+              v-if="previewUrl"
+              class="preview__image"
+              :src="previewUrl"
+              :alt="`${selected?.displayName} preview`"
+            />
+            <div v-else class="preview__empty">No preview</div>
+          </div>
+        </div>
 
-      <div class="select__layout">
+        <template v-if="selected" #hud-bottom>
+          <span class="booth-pill booth-pill--name">{{ selected.displayName }}</span>
+          <span class="booth-pill">{{ selected.id }}</span>
+          <span class="booth-pill booth-pill--dim">{{ selected.custom ? "CUSTOM" : "BUNDLED" }}</span>
+        </template>
+      </ConfigPreviewBooth>
+
+      <ConfigBreadcrumbHeader
+        top="COMMISSIONER"
+        second="Arena Viewer"
+        back-label="BACK"
+        @back="exitViewer"
+      />
+
+      <aside class="select-rail" aria-label="Arenas">
+        <p class="rail-meta">{{ arenas.length }} ARENAS</p>
         <ul class="rows">
           <li
             v-for="(arena, index) in arenas"
@@ -31,57 +63,52 @@
             @click="choose(backIndex)"
             @mouseenter="cursor = backIndex"
           >
-            Back
+            <span class="row__name">&larr; Back</span>
           </li>
         </ul>
+      </aside>
 
-        <div class="preview">
-          <img v-if="previewUrl" class="preview__image" :src="previewUrl" :alt="`${selected?.displayName} preview`" />
-          <div v-else class="preview__empty">No preview</div>
-        </div>
+      <ConfigControllerBar :hints="selectControllerHints" />
+    </template>
+
+    <!-- Overlay while a 3D arena scene is open. -->
+    <template v-else>
+      <!-- Live camera readout; polled because mouse drags move it too. -->
+      <dl v-if="view" class="position">
+        <dt>Pos</dt>
+        <dd>{{ formatVec(view.position) }}</dd>
+        <dt>Target</dt>
+        <dd>{{ formatVec(view.target) }}</dd>
+        <dt>Orbit</dt>
+        <dd>
+          &alpha; {{ degrees(view.alpha) }}&deg; &middot; &beta; {{ degrees(view.beta) }}&deg; &middot; r
+          {{ view.radius.toFixed(2) }}
+        </dd>
+      </dl>
+
+      <div class="hud">
+        <span class="hud__name">{{ selected?.displayName }}</span>
+        <span class="hud__keys">
+          <kbd>{{ keyFor("controlStickUp") }}</kbd><kbd>{{ keyFor("controlStickLeft") }}</kbd><kbd>{{ keyFor("controlStickDown") }}</kbd><kbd>{{ keyFor("controlStickRight") }}</kbd>
+          rotate &middot; <kbd>{{ keyFor("cUp") }}</kbd>/<kbd>{{ keyFor("cDown") }}</kbd> zoom &middot; mouse drag/scroll &middot;
+          <kbd>{{ keyFor("b") }}</kbd> close
+        </span>
+        <ConfigMenuBar variant="back" class="hud__close" @click="onCloseClick">Close</ConfigMenuBar>
+        <span v-if="warnings.length" class="hud__warning">{{ warnings.join(" / ") }}</span>
       </div>
 
-      <p class="menu__hint">
-        <img class="menu__hint-icon" :src="menuIcons.dPad" alt="D-Pad" /> move
-        &middot; <img class="menu__hint-icon" :src="menuIcons.a" alt="A button" /> view
-        &middot; <img class="menu__hint-icon" :src="menuIcons.b" alt="B button" /> back
-      </p>
-      <p v-if="status" class="select__status">{{ status }}</p>
+      <ConfigControllerBar :hints="sceneControllerHints" />
+    </template>
+
+    <div v-if="loading" class="loading">
+      <span class="loading__pill">Loading Arena&hellip;</span>
     </div>
-
-    <!-- Overlay while a scene is open. -->
-    <div v-else class="hud">
-      <span class="hud__name">{{ selected?.displayName }}</span>
-      <span class="hud__keys">
-        <kbd>{{ keyFor("controlStickUp") }}</kbd><kbd>{{ keyFor("controlStickLeft") }}</kbd><kbd>{{ keyFor("controlStickDown") }}</kbd><kbd>{{ keyFor("controlStickRight") }}</kbd>
-        rotate &middot; <kbd>{{ keyFor("cUp") }}</kbd>/<kbd>{{ keyFor("cDown") }}</kbd> zoom &middot; mouse drag/scroll &middot;
-        <kbd>{{ keyFor("b") }}</kbd> close
-      </span>
-      <button type="button" class="hud__close" @click="onCloseClick">Close</button>
-      <span v-if="warnings.length" class="hud__warning">{{ warnings.join(" / ") }}</span>
-    </div>
-
-    <!-- Live camera readout; polled because mouse drags move it too. -->
-    <dl v-if="sceneOpen && view" class="position">
-      <dt>Pos</dt>
-      <dd>{{ formatVec(view.position) }}</dd>
-      <dt>Target</dt>
-      <dd>{{ formatVec(view.target) }}</dd>
-      <dt>Orbit</dt>
-      <dd>
-        &alpha; {{ degrees(view.alpha) }}&deg; &middot; &beta; {{ degrees(view.beta) }}&deg; &middot; r
-        {{ view.radius.toFixed(2) }}
-      </dd>
-    </dl>
-
-    <div v-if="loading" class="loading">Loading&hellip;</div>
-  </div>
+  </ConfigScreenShell>
 </template>
 
 <script lang="ts">
 import { defineComponent, markRaw } from "vue";
 import { type ArenaSummary, arenaById, availableArenas } from "@/content/arenas";
-import { requireAsset, resolveAsset } from "@/content/assets";
 import { type PadControl, describeBinding, keysForControl } from "@/input/controls";
 import {
   type VirtualInput,
@@ -95,17 +122,37 @@ import {
 import { playMenuCue } from "@/audio/menuAudio";
 import { ArenaScene, CAMERA_INPUTS, type CameraState } from "@/render/arena/ArenaScene";
 import { acquireImageUrls, textureValues } from "@/save/imageUrls";
+import type { ControllerHintItem } from "@/ui/controllerIcons";
+import {
+  ConfigBreadcrumbHeader,
+  ConfigControllerBar,
+  ConfigMenuBar,
+  ConfigPreviewBooth,
+  ConfigScreenShell,
+} from "@/ui/configuration-menus";
 
-/** The menu hint's controller icons, as the main menu shows them. */
-const MENU_ICONS = {
-  dPad: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Pad.svg"),
-  a: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-A.svg"),
-  b: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-B.svg"),
-  z: requireAsset("assets/ui/textures/controller/ButtonIcon-N64-D-Z.svg"),
-};
+const SELECT_CONTROLLER_HINTS: readonly ControllerHintItem[] = [
+  { icons: ["dPad"], label: "MOVE" },
+  { icons: ["a"], label: "VIEW" },
+  { icons: ["b"], label: "BACK" },
+];
+
+const SCENE_CONTROLLER_HINTS: readonly ControllerHintItem[] = [
+  { icons: ["stick"], label: "ROTATE" },
+  { icons: ["c"], label: "ZOOM" },
+  { icons: ["b"], label: "CLOSE" },
+];
 
 export default defineComponent({
   name: "ArenaViewer",
+
+  components: {
+    ConfigBreadcrumbHeader,
+    ConfigControllerBar,
+    ConfigMenuBar,
+    ConfigPreviewBooth,
+    ConfigScreenShell,
+  },
 
   emits: ["back"],
 
@@ -125,7 +172,8 @@ export default defineComponent({
       view: null as CameraState | null,
       viewTimer: 0,
       stopGamepadPolling: null as (() => void) | null,
-      menuIcons: MENU_ICONS,
+      selectControllerHints: SELECT_CONTROLLER_HINTS,
+      sceneControllerHints: SCENE_CONTROLLER_HINTS,
     };
   },
 
@@ -145,18 +193,6 @@ export default defineComponent({
 
     previewUrl(): string | null {
       return this.selected?.previewUrl ?? null;
-    },
-
-    /**
-     * The crowd art behind the selection screen. The scrim rides on top of
-     * the photo in the same property, so the menu text keeps its contrast.
-     */
-    backgroundStyle(): Record<string, string> {
-      const url = resolveAsset("assets/ui/textures/artwork/crowd-1.png");
-      if (!url) return {};
-      return {
-        backgroundImage: `linear-gradient(rgba(11, 14, 20, 0.66), rgba(11, 14, 20, 0.66)), url(${url})`,
-      };
     },
   },
 
@@ -187,6 +223,11 @@ export default defineComponent({
     keyFor(control: PadControl): string {
       const [binding] = keysForControl(control);
       return binding ? describeBinding(binding) : "unbound";
+    },
+
+    exitViewer() {
+      playMenuCue("back");
+      this.$emit("back");
     },
 
     onKeyDown(event: KeyboardEvent) {
@@ -223,10 +264,7 @@ export default defineComponent({
       if (isMenuUp(input)) return this.move(-1);
       if (isMenuDown(input)) return this.move(1);
       if (input === "a") return this.choose(this.cursor);
-      if (input === "b") {
-        playMenuCue("back");
-        return this.$emit("back");
-      }
+      if (input === "b") return this.exitViewer();
       // Left and right stay inert, as they are in the menus.
     },
 
@@ -254,8 +292,7 @@ export default defineComponent({
     choose(index: number) {
       this.cursor = index;
       if (index === this.backIndex) {
-        playMenuCue("back");
-        return this.$emit("back");
+        return this.exitViewer();
       }
       const arena = this.arenas[index];
       if (!arena) return;
@@ -314,14 +351,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.viewer {
-  position: absolute;
-  inset: 0;
-  background: #0b0e14;
-  color: #f2f5f8;
-  font-family: var(--vpg-font-body);
-}
-
 .viewer__canvas {
   position: absolute;
   inset: 0;
@@ -332,101 +361,32 @@ export default defineComponent({
   touch-action: none;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background: #070914;
 }
 
 .viewer__canvas[data-active="true"] {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+  z-index: 5;
 }
 
-.select {
-  position: absolute;
-  inset: 0;
-  background-color: #0b0e14;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  padding: 2rem 1rem;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
+/* ----------------------------------------------------------- Booth Preview Art */
 
-.select__title {
-  margin: 0;
-  font-family: var(--vpg-font-display);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.select__layout {
+.preview-stage {
   display: grid;
-  grid-template-columns: minmax(220px, 26vw) minmax(280px, 30rem);
-  gap: clamp(24px, 5vw, 64px);
-  align-items: center;
+  place-items: center;
+  padding: 1.5rem 2.2rem 2.8rem;
+  box-sizing: border-box;
 }
 
-@media (max-width: 720px) {
-  .select__layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.rows {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 12px;
-  color: var(--vpg-item-color-idle);
-  font-family: var(--vpg-font-menu-item);
-  font-size: clamp(18px, 1.8vw, 24px);
-  font-weight: 700;
-  letter-spacing: -1px;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: var(--vpg-item-stroke);
-  cursor: pointer;
-  transition: -webkit-text-fill-color var(--vpg-state-transition), -webkit-text-stroke-width var(--vpg-state-transition);
-}
-
-.row--back {
-  margin-top: 0.5rem;
-}
-
-.row--active {
-  -webkit-text-fill-color: var(--vpg-item-color-active);
-  -webkit-text-stroke-width: 1.5px;
-  animation: glowPulse 1s ease-in-out infinite;
-}
-
-.row__name {
-  flex: 1;
-}
-
-.row__tag {
-  padding: 1px 6px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 3px;
-  font-family: var(--vpg-font-body);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  -webkit-text-fill-color: #f2f5f8;
-  -webkit-text-stroke-width: 0;
-  opacity: 0.7;
-  animation: none;
+.preview {
+  width: min(100%, 34rem);
+  border: 4px solid var(--vpg-cfg-frame-border);
+  background: rgba(12, 8, 30, 0.9);
+  box-shadow: 0 0 28px rgba(176, 118, 255, 0.35), 0 12px 28px rgba(4, 2, 14, 0.65);
 }
 
 .preview__image {
@@ -434,7 +394,6 @@ export default defineComponent({
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
-  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .preview__empty {
@@ -442,131 +401,276 @@ export default defineComponent({
   aspect-ratio: 16 / 9;
   display: grid;
   place-items: center;
-  border: 1px dashed rgba(255, 255, 255, 0.25);
-  opacity: 0.5;
-  font-size: 0.85rem;
+  color: #b4a2d6;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.menu__hint {
-  margin: 0;
+.booth-pill {
+  padding: 0.14rem 0.44rem;
+  background: rgba(12, 8, 30, 0.82);
+  border: 1px solid rgba(208, 172, 255, 0.45);
+  color: #e6d4ff;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.booth-pill--name {
+  border-color: rgba(182, 255, 116, 0.55);
+  color: #c2ff7e;
+}
+
+.booth-pill--dim {
+  color: #b4a2d6;
+  border-color: rgba(208, 172, 255, 0.25);
+}
+
+/* ----------------------------------------------------------- Left Selection Rail */
+
+.select-rail {
+  position: absolute;
+  top: 19.2%;
+  bottom: 6.2%;
+  left: 3.4%;
+  width: clamp(18.5rem, 33.5vw, 27.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.34rem;
+  min-height: 0;
+  z-index: 8;
+  font-family: var(--vpg-font-pixel);
+}
+
+.rail-meta {
+  margin: 0 0.55rem 0 0.15rem;
+  padding: 0.24rem 0.65rem;
+  background: var(--vpg-cfg-panel-bg);
+  border-left: 3px solid var(--vpg-cfg-accent-lime);
+  color: var(--vpg-cfg-accent-lime);
   font-size: 0.8rem;
-  opacity: 0.6;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.menu__hint-icon {
-  display: inline-block;
-  width: 1.3rem;
-  height: 1.3rem;
-  margin: 0 0.12rem;
-  object-fit: contain;
-  vertical-align: middle;
-}
-
-.select__status {
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
   margin: 0;
-  color: var(--vpg-item-color-active);
-  font-size: 0.85rem;
-  max-width: 40rem;
-  text-align: center;
+  padding: 0.12rem 0.55rem 0.25rem 0.15rem;
+  list-style: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-color: var(--vpg-cfg-frame-border) rgba(15, 22, 46, 0.55);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  min-height: 2.2rem;
+  padding: 0.22rem 0.8rem;
+  background: var(--vpg-cfg-bar-idle);
+  color: var(--vpg-cfg-text);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(7, 14, 34, 0.85);
+  -webkit-font-smoothing: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 90ms ease, background 90ms ease, color 90ms ease;
+}
+
+.row:hover {
+  filter: brightness(1.08);
+}
+
+.row--back {
+  margin-top: 0.28rem;
+  justify-content: center;
+}
+
+.row--back .row__name {
+  flex: 0 1 auto;
+}
+
+.row--active {
+  background: var(--vpg-cfg-bar-active);
+  color: var(--vpg-cfg-text-active);
+  text-shadow: none;
+  transform: scaleX(1.035);
+  box-shadow: 0 0 16px rgba(204, 168, 255, 0.55);
+  z-index: 4;
+}
+
+.row__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__tag {
+  padding: 0.1rem 0.42rem;
+  border: 1px solid rgba(182, 255, 116, 0.65);
+  background: rgba(12, 18, 40, 0.72);
+  color: var(--vpg-cfg-accent-lime);
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: none;
+  flex-shrink: 0;
+}
+
+.row--active .row__tag {
+  border-color: var(--vpg-cfg-text-active);
+  background: rgba(14, 7, 26, 0.14);
+  color: var(--vpg-cfg-text-active);
+}
+
+/* ----------------------------------------------------------- 3D Scene HUD & Telemetry */
+
+.position {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.95rem;
+  z-index: 12;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.18rem 0.65rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--vpg-cfg-panel-bg);
+  border: 1px solid rgba(204, 168, 255, 0.45);
+  border-left: 3px solid var(--vpg-cfg-accent-lime);
+  color: #e6d4ff;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.position dt {
+  color: var(--vpg-cfg-accent-lime);
+  text-transform: uppercase;
+}
+
+.position dd {
+  margin: 0;
+  color: var(--vpg-cfg-text);
 }
 
 .hud {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 2.35rem;
+  z-index: 12;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1.25rem;
-  padding: 0.75rem 1rem;
-  background: linear-gradient(transparent, rgba(10, 14, 20, 0.8));
+  gap: 0.5rem 1rem;
+  padding: 0.65rem 1.25rem;
+  background: linear-gradient(transparent, rgba(7, 9, 20, 0.86));
+  font-family: var(--vpg-font-pixel);
   font-size: 0.82rem;
+  letter-spacing: 0.05em;
   pointer-events: none;
 }
 
 .hud__name {
-  font-family: var(--vpg-font-menu-item);
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: -1px;
+  padding: 0.22rem 0.62rem;
+  background: rgba(12, 8, 30, 0.88);
+  border: 1px solid rgba(182, 255, 116, 0.6);
+  color: var(--vpg-cfg-accent-lime);
+  font-family: var(--vpg-font-display);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hud__keys {
   flex: 1;
-  opacity: 0.75;
+  color: #d6e4ff;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(5, 8, 18, 0.92);
 }
 
 .hud__close {
   pointer-events: auto;
-  padding: 0.35rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.3rem;
-  background: #141a24;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.hud__close:hover,
-.hud__close:focus-visible {
-  border-color: var(--vpg-item-color-active);
+  width: auto;
+  min-width: 7.2rem;
+  min-height: 2.25rem;
 }
 
 .hud__warning {
   flex-basis: 100%;
-  color: #ffcc80;
-}
-
-.position {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 0.15rem 0.6rem;
-  margin: 0;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.25rem;
-  background: rgba(10, 14, 20, 0.7);
-  font-family: ui-monospace, monospace;
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-  pointer-events: none;
-}
-
-.position dt {
-  opacity: 0.6;
-}
-
-.position dd {
-  margin: 0;
+  padding: 0.28rem 0.6rem;
+  background: rgba(42, 10, 20, 0.88);
+  border-left: 3px solid var(--vpg-cfg-accent-amber);
+  color: var(--vpg-cfg-accent-amber);
 }
 
 .loading {
   position: absolute;
   inset: 0;
+  z-index: 25;
   display: grid;
   place-items: center;
-  background: rgba(6, 8, 12, 0.6);
-  font-family: var(--vpg-font-menu-item);
-  font-size: 1.2rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  background: rgba(7, 5, 18, 0.62);
   pointer-events: none;
+}
+
+.loading__pill {
+  padding: 0.55rem 1.15rem;
+  background: var(--vpg-cfg-modal-bg);
+  border: 3px solid var(--vpg-cfg-frame-border);
+  box-shadow: 0 0 24px var(--vpg-cfg-frame-glow);
+  color: var(--vpg-cfg-accent-lime);
+  font-family: var(--vpg-font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 kbd {
   display: inline-block;
   min-width: 1.3rem;
-  padding: 0.05rem 0.3rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-bottom-width: 2px;
-  border-radius: 0.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  font-family: var(--vpg-font-body);
-  font-size: 0.75rem;
+  margin: 0 0.08rem;
+  padding: 0.08rem 0.34rem;
+  border: 1px solid rgba(204, 168, 255, 0.55);
+  background: rgba(16, 22, 52, 0.88);
+  color: #f4f8ff;
+  font-family: var(--vpg-font-pixel);
+  font-size: 0.74rem;
   text-align: center;
+}
+
+@media (max-width: 760px) {
+  .select-rail {
+    top: 46%;
+    bottom: 2.8rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+
+  .preview-stage {
+    padding: 0.75rem 1rem 2.4rem;
+  }
 }
 </style>

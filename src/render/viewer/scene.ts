@@ -4,7 +4,7 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
@@ -21,8 +21,7 @@ import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Animations/animatable";
 
 export const CAMERA_HOME = new Vector3(0, 0.9, 0);
-const BG = Color3.FromHexString("#15171c");
-const GROUND_SIZE = 40;
+const GROUND_SIZE = 16;
 
 export interface Viewer {
   engine: Engine;
@@ -35,15 +34,18 @@ export interface Viewer {
 }
 
 export function createViewer(canvas: HTMLCanvasElement): Viewer {
-  const engine = new Engine(canvas, true, { stencil: true });
+  const engine = new Engine(canvas, true, {
+    preserveDrawingBuffer: true,
+    stencil: true,
+    alpha: true,
+    premultipliedAlpha: false,
+    antialias: true,
+  });
   engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
 
   const scene = new Scene(engine);
-  scene.clearColor = BG.toColor4(1);
-  scene.fogMode = Scene.FOGMODE_LINEAR;
-  scene.fogColor = BG;
-  scene.fogStart = 8;
-  scene.fogEnd = 20;
+  // Transparent clear colour lets the Configuration Menus purple perspective booth show through seamlessly.
+  scene.clearColor = new Color4(0, 0, 0, 0);
 
   const camera = new ArcRotateCamera("camera", Math.PI / 2, 1.25, 4.4, CAMERA_HOME.clone(), scene);
   camera.attachControl(canvas, true);
@@ -98,13 +100,13 @@ export function createViewer(canvas: HTMLCanvasElement): Viewer {
   };
 }
 
-// 1 m grid as a tiled texture (mipmapped, so it stays clean at grazing angles and fades into the fog).
+// 1 m reference floor grid fading radially into the purple wireframe booth behind the character.
 function createGround(scene: Scene) {
   const gridTex = new DynamicTexture("gridTex", { width: 256, height: 256 }, scene, true);
   const ctx = gridTex.getContext();
-  ctx.fillStyle = "#2a2e37";
+  ctx.fillStyle = "#261248";
   ctx.fillRect(0, 0, 256, 256);
-  ctx.strokeStyle = "#454b59";
+  ctx.strokeStyle = "#b076ff";
   ctx.lineWidth = 4;
   ctx.strokeRect(0, 0, 256, 256);
   gridTex.update();
@@ -112,10 +114,23 @@ function createGround(scene: Scene) {
   gridTex.uScale = gridTex.vScale = GROUND_SIZE;
   gridTex.anisotropicFilteringLevel = 16;
 
+  const fadeTex = new DynamicTexture("gridFadeTex", { width: 256, height: 256 }, scene, false);
+  const fctx = fadeTex.getContext();
+  const grad = fctx.createRadialGradient(128, 128, 22, 128, 128, 124);
+  grad.addColorStop(0, "rgba(255, 255, 255, 0.78)");
+  grad.addColorStop(0.52, "rgba(255, 255, 255, 0.42)");
+  grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+  fctx.clearRect(0, 0, 256, 256);
+  fctx.fillStyle = grad;
+  fctx.fillRect(0, 0, 256, 256);
+  fadeTex.update();
+  fadeTex.hasAlpha = true;
+
   const ground = CreateGround("ground", { width: GROUND_SIZE, height: GROUND_SIZE }, scene);
   const groundMat = new StandardMaterial("groundMat", scene);
   groundMat.diffuseTexture = gridTex;
-  groundMat.diffuseColor = new Color3(0.45, 0.45, 0.45);
+  groundMat.opacityTexture = fadeTex;
+  groundMat.diffuseColor = new Color3(0.62, 0.56, 0.75);
   groundMat.specularColor = Color3.Black();
   ground.material = groundMat;
   ground.receiveShadows = true;

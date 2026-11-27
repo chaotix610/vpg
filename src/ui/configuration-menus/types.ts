@@ -3,7 +3,8 @@ export type ConfigBoothLayout =
   | "framed-center"
   | "framed-moves"
   | "framed-moves-detail"
-  | "framed-rail";
+  | "framed-rail"
+  | "fullscreen";
 
 export type ConfigBarVariant =
   | "default"

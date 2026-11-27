@@ -1,6 +1,6 @@
 # Configuration Menus Design Language & Component Reference
 
-**Configuration Menus** (`src/ui/configuration-menus/`) are Virtual Pro Grappler's retro console customization and setup screens—inspired by classic N64/AKI wrestling editors. They power [CharacterEditor.vue](../../src/ui/CharacterEditor.vue) and the editing screen of [ArenaEditor.vue](../../src/ui/ArenaEditor.vue) today, and are designed for reuse across future configuration workflows such as Move Set Editor, Championship / Title Setup, Tag Teams & Stables, Match Rules, and Season / PPV Configuration.
+**Configuration Menus** (`src/ui/configuration-menus/`) are Virtual Pro Grappler's retro console customization and setup screens—inspired by classic N64/AKI wrestling editors. They power [CharacterEditor.vue](../../src/ui/CharacterEditor.vue), [ArenaEditor.vue](../../src/ui/ArenaEditor.vue), [ArenaViewer.vue](../../src/ui/ArenaViewer.vue), [ControlMapper.vue](../../src/ui/ControlMapper.vue), and [AnimationViewer.vue](../../src/ui/AnimationViewer.vue) today, and are designed for reuse across future configuration workflows such as Move Set Editor, Championship / Title Setup, Tag Teams & Stables, Match Rules, and Season / PPV Configuration.
 
 Compare with [Main Menus](./main-menus.md), which cover top-level mode and page navigation.
 
@@ -78,7 +78,8 @@ split-right (Roster / Hub)          framed-center (2-Col Hub)          framed-mo
 | `"framed-center"` | `top: 19%; bottom: 11%; left: 8%; right: 8%` | `left: 0; width: 100%` | 2-Column Category Hub (`APPEARANCE`) |
 | `"framed-moves"` | `top: 21%; bottom: 11%; left: 9%; right: 8%` | `left: 26%; width: 74%` | Narrow Left-Rail List (`MOVES` categories) |
 | `"framed-moves-detail"` | `top: 21%; bottom: 11%; left: 9%; right: 8%` | `left: 33%; width: 67%` | Medium Left-Rail Scroll List (`MOVES > GRAPPLING`) |
-| `"framed-rail"` | `top: 21%; bottom: 11%; left: 9%; right: 8%` | `left: 36%; width: 64%` | Key-Value / Parameter Rails (`PROFILE`, `PARAMETER`, Detail) |
+| `"framed-rail"` | `top: 21%; bottom: 11%; left: 9%; right: 8%` | `left: 36%; width: 64%` | Key-Value / Parameter Rails (`PROFILE`, `PARAMETER`, `AnimationViewer`, Detail) |
+| `"fullscreen"` | `inset: 0; border: 0; box-shadow: none` | `left: 0; width: 100%` | Unobstructed full-bleed inspection mode (e.g., `AnimationViewer` when the rail is hidden via `Z`) |
 
 ---
 
@@ -181,7 +182,7 @@ Segmented retro progress/stat bar designed for the middle column of `<ConfigMenu
 Persistent repositionable purple perspective wireframe booth hosting a transparent WebGL `<canvas class="stage-canvas">` or 2D preview.
 
 - **Props (`ConfigPreviewBooth`)**:
-  - `layout: ConfigBoothLayout` (`"split-right" | "framed-center" | "framed-moves" | "framed-moves-detail" | "framed-rail"`)
+  - `layout: ConfigBoothLayout` (`"split-right" | "framed-center" | "framed-moves" | "framed-moves-detail" | "framed-rail" | "fullscreen"`)
   - `centerX?: number` (default `500`) — vertical V-corner seam in `0..1000` SVG viewBox units
   - `loading?: boolean`
   - `loadingLabel?: string` (default `"LOADING…"`)

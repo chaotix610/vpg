@@ -55,6 +55,8 @@ const hostClasses = computed(() => {
       return "stage-host--framed-wide stage-host--framed-moves-detail";
     case "framed-rail":
       return "stage-host--framed-wide stage-host--framed-rail";
+    case "fullscreen":
+      return "stage-host--fullscreen";
   }
 });
 </script>
@@ -91,6 +93,12 @@ const hostClasses = computed(() => {
   right: 8%;
   border: 10px solid var(--vpg-cfg-frame-border);
   box-shadow: 0 0 28px var(--vpg-cfg-frame-glow), inset 0 0 24px rgba(18, 4, 42, 0.55);
+}
+
+.stage-host--fullscreen {
+  inset: 0;
+  border: 0;
+  box-shadow: none;
 }
 
 :slotted(.stage-canvas) {

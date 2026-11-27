@@ -114,7 +114,7 @@ Full-viewport arena backdrop container with centered vertical flex layout.
 - **Slots**: default slot for menu stack or full-screen child routes.
 
 ### `MainMenuHeading`
-Displays custom logo artwork when `src` is provided, falling back to an uppercase `VPG Retropix` `<h1>`.
+Displays custom logo artwork when `src` is provided, falling back to an uppercase `VPG Retropix` `<h1>`. Top-level sub-pages without custom heading artwork (`multiPlay`, `singlePlay`, and `commissioner`) intentionally omit `MainMenuHeading` in [src/app/MainMenu.vue](../../src/app/MainMenu.vue) so their stacked entries sit cleanly over the arena backdrop.
 
 - **Props**:
   - `title: string` — accessible `alt` text for artwork or visible `<h1>` text
